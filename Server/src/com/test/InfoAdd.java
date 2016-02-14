@@ -5,6 +5,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+/*this part will add some test
+ * user and relationship use for initial test
+ */
 public class InfoAdd {
 
 	private Connection InfoConn;
@@ -24,9 +27,22 @@ public class InfoAdd {
 			for(int i = 0 ; i < 8 ; i++)
 			{
 				String s = UserName[i]+"%:%"+Password[i]+"%:%"+Age[i];
-				System.out.println(s);
 				this.setUserInfo(s);
-			}			
+			}
+			for(int i = 0 ; i < 8; i++)
+			{
+				for(int j = 0 ; j < 8; j++)
+				{
+					if(i == j)
+						continue;
+					else
+					{
+						String s = UserName[i] + "%:%" + UserName[j];
+						this.setRelation(s);
+						
+					}
+				}
+			}
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -40,8 +56,6 @@ public class InfoAdd {
 	{
 		String[] stringArray = Info.split("%:%");
 		stmt = InfoConn.createStatement();
-		
-		System.out.println("1e1je2le1jel2je");
 		String sql = "INSERT INTO USERINFO (USERNAME,PASSWORD,AGE,ID)"
 					+"VALUES('" + stringArray[0]
 					+"','"+stringArray[1]
@@ -50,4 +64,19 @@ public class InfoAdd {
 					+");";
 		stmt.executeUpdate(sql);		
 	}
+	
+	public void setRelation(String Info) throws Throwable
+	{
+		String[] stringArray = Info.split("%:%");
+		//System.out.println(stringArray.length);
+		stmt = InfoConn.createStatement();
+		String sql = "INSERT INTO RELATION (USERNAME,FRIEND)"
+					+"VALUES('" + stringArray[0]
+					+"','"+stringArray[1]
+					+"');";
+		stmt.executeUpdate(sql);
+	}
+	
+	
+	
 }
