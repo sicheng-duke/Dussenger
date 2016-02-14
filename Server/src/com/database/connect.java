@@ -8,6 +8,10 @@ import java.sql.Statement;
 public class connect {
 	
 	private Connection conn;
+	
+	public Connection getConn() {
+		return conn;
+	}
 	public void connectDatabase()
 	{
 	    String DATABASE = "Dussenger";
@@ -17,7 +21,7 @@ public class connect {
 	            Class.forName("org.postgresql.Driver"); 
 	            String url = "jdbc:postgresql://localhost/" + DATABASE + "?user=" + USER + "&password=" + PASSWORD; 
 	            this.conn = DriverManager.getConnection(url);
-	            conn.close();
+	            //conn.close();
 	            
 	            } 
 	            catch (ClassNotFoundException e) { 
@@ -26,5 +30,15 @@ public class connect {
 	            catch (SQLException e) { 
 	                e.printStackTrace(); 
 	            }	
+	}
+	
+	public void close()
+	{
+		try {
+			this.conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

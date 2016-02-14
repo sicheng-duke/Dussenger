@@ -3,6 +3,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+
 /*initialize Database, create table to store user information
 * and relationship between users
 */ 
@@ -23,8 +24,8 @@ public class init {
 	    		stmt = conn.createStatement();
 	            String user_info = "CREATE TABLE USERINFO " +
 	                         "(USERNAME    VARCHAR PRIMARY KEY     NOT NULL," +
-	                         " PASSWORK    VARCHAR                 NOT NULL   , " +
-	                         " AGE         VARCHAR   , " +
+	                         " PASSWORD    VARCHAR                 NOT NULL   , " +
+	                         " AGE         INT   , " +
 	                         " ID          INT);";
 	            stmt.executeUpdate(user_info);
 	            
