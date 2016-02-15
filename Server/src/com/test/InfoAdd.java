@@ -20,9 +20,6 @@ public class InfoAdd {
 		String[] UserName = {"Abb","Bcc","Cdd","Dee","Eff","Fgg","Ghh","Hii"};
 		String[] Password = {"123","234","345","456","567","678","789","890"};
 		String[] Age = {"15","45","67","23","42","15","45","67"};
-		
-		
-		
 		try {
 			for(int i = 0 ; i < 8 ; i++)
 			{
@@ -51,7 +48,7 @@ public class InfoAdd {
 		
 	}
 	
-	
+	//insert user info into database
 	public void setUserInfo(String Info) throws Throwable
 	{
 		String[] stringArray = Info.split("%:%");
@@ -65,10 +62,10 @@ public class InfoAdd {
 		stmt.executeUpdate(sql);		
 	}
 	
+	//insert relation into database
 	public void setRelation(String Info) throws Throwable
 	{
 		String[] stringArray = Info.split("%:%");
-		//System.out.println(stringArray.length);
 		stmt = InfoConn.createStatement();
 		String sql = "INSERT INTO RELATION (USERNAME,FRIEND)"
 					+"VALUES('" + stringArray[0]

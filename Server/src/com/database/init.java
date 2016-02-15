@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 /*initialize Database, create table to store user information
 * and relationship between users
 */ 
+
 public class init {
 
 	private Connection conn;

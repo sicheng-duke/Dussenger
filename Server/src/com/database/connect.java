@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-//This method can let the server connect to the Database 
+/*This method can let the server connect to the Database 
+ * include several method that can help the user connect and disconnect to the database
+ */
 public class connect {
 	
 	private Connection conn;

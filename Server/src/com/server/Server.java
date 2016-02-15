@@ -7,7 +7,7 @@ public class Server {
 		// TODO Auto-generated method stub
 		System.out.println("server");
 		//initialize();
-		InfoAdd info = new InfoAdd();
+		relation rl = new relation();
 		
 		}
 	
@@ -16,5 +16,6 @@ public class Server {
 	{
 		init  initial = new init();
 		initial.initDatabase();
+		InfoAdd info = new InfoAdd();
 	}
 }
