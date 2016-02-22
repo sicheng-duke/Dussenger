@@ -1,4 +1,4 @@
-package gui.swing;
+package duInterface;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;

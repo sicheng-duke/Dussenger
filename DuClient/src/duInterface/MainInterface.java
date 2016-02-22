@@ -1,4 +1,4 @@
-package gui.swing;
+package duInterface;
 
 import java.awt.EventQueue;
 import java.awt.GridLayout;
@@ -41,21 +41,7 @@ public class MainInterface extends JFrame {
 	private JButton searchbtn;
 	private JTextField tf_Name;
 	private JTextField tf_ID;
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainInterface frame = new MainInterface();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 	/**
 	 * Create the frame.
 	 */
