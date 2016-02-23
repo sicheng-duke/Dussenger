@@ -1,5 +1,7 @@
 package duInterface;
-
+/*
+ * this class is for initialize a new interface when friend requested in the search box isnt found
+ */
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -31,10 +33,10 @@ public class friendNotFound extends JFrame {
 		JPanel reminderPanel = new JPanel();
 		contentPane.add(reminderPanel);
 		
-		JTextArea txtrThePersonYou = new JTextArea();
-		txtrThePersonYou.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		txtrThePersonYou.setText("the person you are looking for is not your friend");
-		reminderPanel.add(txtrThePersonYou);
+		JTextArea notFound = new JTextArea();
+		notFound.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		notFound.setText("the person you are looking for is not your friend");
+		reminderPanel.add(notFound);
 		
 		JPanel addfriendPanel = new JPanel();
 		contentPane.add(addfriendPanel);

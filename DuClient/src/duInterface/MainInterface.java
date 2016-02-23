@@ -24,7 +24,9 @@ import java.awt.Font;
 import java.awt.Component;
 import javax.swing.Box;
 import java.awt.SystemColor;
-
+/*
+ * this class is for the main interface after user login Dussenger
+ */
 public class MainInterface extends JFrame {
 	private JTextField tf_search;
 	private JLabel[] friend;
@@ -138,7 +140,7 @@ public class MainInterface extends JFrame {
 		getContentPane().add(chatBox);
 		chatBox.setLayout(null);
 		
-		//before any talk
+		//before any talk, chat box is blank
 		tf_NoChat = new JTextField();
 		tf_NoChat.setEditable(false);
 		tf_NoChat.setBackground(SystemColor.window);
@@ -148,6 +150,7 @@ public class MainInterface extends JFrame {
 		chatBox.add(tf_NoChat);
 		tf_NoChat.setColumns(10);
 	}
+	//when a friend is selected, chat box of that friend is opened
 	public void newChatBox(String friendID){
 		chatBox.removeAll();
 		hasChat = true;
