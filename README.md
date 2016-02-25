@@ -26,7 +26,7 @@ On right part is a chat box.
 ### TASK 4: Server  
 For the server,our program use Postgresql as Database to store user information and relationship between users.
 
-To run the server on other computer, you need to install [Postgeresql](http://www.postgresql.org/download/) on your computer , uncomment the `initialize` method in Server.java and then you can use the program to set up the new Database on your computer.
+To run the server on other computer, you need to install [Postgeresql](http://www.postgresql.org/download/) on your computer , uncomment the `initialize` method in Server.java,set user, password, database the same as them in init.java and then you can use the program to set up the new Database on your computer.
 
 The Server code provide `initDatabase` method to create tables in the Database.  
 It also provide a test code to add some initial user and relationship to the Database for testing.  
