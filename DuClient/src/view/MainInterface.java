@@ -19,11 +19,13 @@ import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.*;
 import java.awt.Color;
 
 import javax.swing.UIManager;
 
 import common.Message;
+import common.MessageType;
 import common.UserInfo;
 import controller.Connection;
 import controller.ManageChat;
@@ -172,6 +174,27 @@ public class MainInterface extends JFrame implements ActionListener{
 		chatBox.add(tf_NoChat);
 		tf_NoChat.setColumns(10);
 		//ManageChat.addView("1", this);
+		//this.setDefaultCloseOperation(EXIT_ON_CLOSE); 
+		
+		this.addWindowListener(new java.awt.event.WindowAdapter() { 
+				public void windowClosing(java.awt.event.WindowEvent e) { 
+						System.out.println("window close");
+						Socket s = ManageThread.getClientConServerThread(usr).getS();
+						try {
+							ObjectOutputStream oos=new ObjectOutputStream(s.getOutputStream());
+							Message end = new Message();
+							end.setMesType(MessageType.logout);
+							end.setSender(usr);
+							oos.writeObject(end);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						
+						System.exit(0); 
+					} 
+				}); 
 		this.setVisible(true);
 	}
 	//when a friend is selected, chat box of that friend is opened
@@ -238,6 +261,8 @@ public class MainInterface extends JFrame implements ActionListener{
 		}
 		
 	}
+	
+	
 	
 	
 	

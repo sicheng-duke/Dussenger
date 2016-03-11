@@ -21,10 +21,10 @@ public class ClientThread extends Thread {
 	}
 	
 	public void run(){
-		while(true)
-		{
-			ObjectInputStream ois;
-			try {
+		
+		ObjectInputStream ois;
+		try {
+			while(true){
 				ois = new ObjectInputStream(s.getInputStream());
 				Message m=(Message)ois.readObject();
 				System.out.println("Sender: " + m.getSender()+"to");
@@ -41,18 +41,18 @@ public class ClientThread extends Thread {
 					s = s + m.getCon();
 					ManageChat.addCon(m.getSender(), s);
 				}
-
+			}
 				
-			} catch (Exception e) {
+		}catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			
 		}
+			
+		
 	}
 	
-
-	
-	
-
 }
+	
+	
+
+

@@ -13,6 +13,9 @@ public class Message implements java.io.Serializable{
 	private String getter;
 	private String con;
 	private String sendTime;
+	public Message(){
+		this.mesType = MessageType.default_type;
+	}
 	public String getSender() {
 		return sender;
 	}

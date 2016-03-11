@@ -27,9 +27,7 @@ public class Server {
 				ServerThread thread=new ServerThread(s);
 				ManageThread.addThread(u.getUserId(), thread);
 				thread.start();
-				
-				
-				
+					
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

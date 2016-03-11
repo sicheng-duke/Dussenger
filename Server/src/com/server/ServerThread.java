@@ -18,24 +18,34 @@ public class ServerThread extends Thread {
 	public ServerThread(Socket s){
 		this.s = s;
 	}
-	
+
 	public void run(){
-		while(true)
-		{
-			ObjectInputStream ois;
-			try {
+		
+		ObjectInputStream ois;
+		try {
+			while(true){
 				ois = new ObjectInputStream(s.getInputStream());
 				Message m=(Message)ois.readObject();
-				ServerThread thread = ManageThread.getThread(m.getGetter());
-				ObjectOutputStream oos=new ObjectOutputStream(thread.s.getOutputStream());
-				oos.writeObject(m);
-			} catch (Exception e) {
+				if(m.getMesType().equals(MessageType.logout))
+				{
+					System.out.println("Use:"+m.getSender()+" logout");
+					ManageThread.getThread(m.getSender()).interrupt();
+					return;
+				}
+				else
+				{
+					ServerThread thread = ManageThread.getThread(m.getGetter());
+					ObjectOutputStream oos=new ObjectOutputStream(thread.s.getOutputStream());
+					oos.writeObject(m);
+				}
+			}
+		} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 		}
-	}
+	
 }
 	
 
