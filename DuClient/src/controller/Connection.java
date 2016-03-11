@@ -10,7 +10,7 @@ public class Connection {
 	public void loginInfo(Object login)
 	{
 		try {
-			s = new Socket("10.190.53.53",6666);
+			s = new Socket("192.168.0.15",6541);
 			ObjectOutputStream oos=new ObjectOutputStream(s.getOutputStream());
 			oos.writeObject(login);
 			ClientThread thread=new ClientThread(s);

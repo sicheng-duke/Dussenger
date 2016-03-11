@@ -8,18 +8,27 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.awt.event.ActionEvent;
 
+import java.util.ArrayList;
+
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
 import java.awt.Color;
 
 import javax.swing.UIManager;
+
+import common.Message;
+import common.UserInfo;
+import controller.Connection;
+import controller.ManageChat;
+import controller.ManageThread;
+
 import java.awt.Font;
 import java.awt.Component;
 import javax.swing.Box;
@@ -27,7 +36,7 @@ import java.awt.SystemColor;
 /*
  * this class is for the main interface after user login Dussenger
  */
-public class MainInterface extends JFrame {
+public class MainInterface extends JFrame implements ActionListener{
 	private JTextField tf_search;
 	private JLabel[] friend;
 	private int[] friendArray;
@@ -43,15 +52,20 @@ public class MainInterface extends JFrame {
 	private JButton searchbtn;
 	private JTextField tf_Name;
 	private JTextField tf_ID;
-	
+	private JButton btnSend;
 	/**
 	 * Create the frame.
 	 */
-	
-	public static void main(String[] args) {
-		MainInterface a = new MainInterface();
+	private String usr;
+	private String target;
+	public String getTarget() {
+		return target;
 	}
-	public MainInterface() {
+	public void setTarget(String target) {
+		this.target = target;
+	}
+	public MainInterface(String usr) {
+		this.usr = usr;
 		setTitle("Dussenger");
 		setResizable(false);
 		getContentPane().setBackground(UIManager.getColor("CheckBoxMenuItem.selectionBackground"));
@@ -91,6 +105,10 @@ public class MainInterface extends JFrame {
 		lbl_Name.setBounds(7, 6, 61, 38);
 		search.add(lbl_Name);
 		
+		btnSend = new JButton("send");
+		btnSend.setForeground(UIManager.getColor("Button.light"));
+		btnSend.setBounds(336, 358, 75, 29);
+		btnSend.addActionListener(this);
 		JLabel lbl_ID = new JLabel("ID:");
 		lbl_ID.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_ID.setBounds(6, 54, 61, 38);
@@ -153,10 +171,13 @@ public class MainInterface extends JFrame {
 		tf_NoChat.setBounds(105, 214, 220, 65);
 		chatBox.add(tf_NoChat);
 		tf_NoChat.setColumns(10);
+		//ManageChat.addView("1", this);
 		this.setVisible(true);
 	}
 	//when a friend is selected, chat box of that friend is opened
 	public void newChatBox(String friendID){
+		this.target = friendID;
+		
 		chatBox.removeAll();
 		hasChat = true;
 		tf_friendinfo = new JTextField("friend: " + friendID);
@@ -174,12 +195,15 @@ public class MainInterface extends JFrame {
 		currTalk = new JTextArea();
 		currTalk.setBounds(6, 387, 405, 112);
 		chatBox.add(currTalk);
-		JButton btnSend = new JButton("send");
-		btnSend.setForeground(UIManager.getColor("Button.light"));
-		btnSend.setBounds(336, 358, 75, 29);
+		
 		chatBox.add(btnSend);
 		chatBox.revalidate();
 		chatBox.repaint();
+		if(ManageChat.getCon(friendID) != null){
+			oldTalk.append(ManageChat.getCon(friendID));
+			ManageChat.remove(friendID);
+			
+		}
 		
 	}
 	public boolean search(String friendID){
@@ -191,5 +215,31 @@ public class MainInterface extends JFrame {
 		}
 		return false;
 	}
+	public void showMessage(Message m)
+	{
+		String info=m.getSender()+" to "+m.getGetter()+" :"+m.getCon()+"\r\n";
+		this.oldTalk.append(info);
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == btnSend){
+			try {
+				Message m = new Message();
+				m.setGetter(this.target);
+				m.setSender(this.usr);
+				m.setCon(currTalk.getText());
+				ObjectOutputStream oos=new ObjectOutputStream
+				(ManageThread.getClientConServerThread(this.usr).getS().getOutputStream());
+				oos.writeObject(m);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		
+	}
+	
+	
+	
 }
 

@@ -99,7 +99,8 @@ public class ClientLogin extends JFrame implements ActionListener{
 				info.setUserId(usr_txt.getText());
 				info.setPasswd(new String(passwd_txt.getPassword()));
 				new Connection().loginInfo(info);
-				new MainInterface();
+				MainInterface main = new MainInterface(usr_txt.getText());
+				ManageChat.addView("1", main);
 			}
 		}
 	}

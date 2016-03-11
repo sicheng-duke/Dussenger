@@ -17,7 +17,7 @@ public class Server {
 		try {
 			String ss=InetAddress.getLocalHost().getHostAddress();
 			System.out.println(ss);
-			ServerSocket socket = new ServerSocket(6541);
+			ServerSocket socket = new ServerSocket(6666);
 			while(true)
 			{
 				Socket s = socket.accept();
@@ -26,7 +26,6 @@ public class Server {
 				System.out.println(u.getUserId()+ " : " + u.getPasswd());
 				ServerThread thread=new ServerThread(s);
 				ManageThread.addThread(u.getUserId(), thread);
-				thread.start();
 				
 				
 				

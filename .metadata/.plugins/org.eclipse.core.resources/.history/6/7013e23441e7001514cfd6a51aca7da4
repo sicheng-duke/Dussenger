@@ -1,0 +1,32 @@
+package com.server;
+
+import java.io.*;
+import java.net.*;
+
+public class ServerThread extends Thread {
+	
+	private Socket s;
+	
+	public Socket getS() {
+		return s;
+	}
+
+	public void setS(Socket s) {
+		this.s = s;
+	}
+
+	public ServerThread(Socket s){
+		this.s = s;
+	}
+	
+	public void run(){
+		while(true)
+		{
+			
+		}
+	}
+}
+	
+
+	
+	
