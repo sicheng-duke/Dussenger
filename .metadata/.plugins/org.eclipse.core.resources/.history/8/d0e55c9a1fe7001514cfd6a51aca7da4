@@ -1,0 +1,91 @@
+package duInterface;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class ClientLogin extends JFrame implements ActionListener{
+	//set the components for the interface
+	JPanel jpm1,jpm2,jps;
+	JLabel logo, username_label,password_labeo;
+	JTextField jtf;
+    JPasswordField jpf;
+   
+    
+    JButton register_btn,login;
+	
+	public ClientLogin()
+	{
+		//north
+		logo=new JLabel(new ImageIcon("image_material/DuLogo.jpg"));
+
+		//center
+        jpm1=new JPanel();
+        username_label=new JLabel("Username");
+        username_label.setFont(new Font("Serif",Font.PLAIN,30));
+        username_label.setForeground(Color.blue);
+        jtf=new JTextField(15);
+        jtf.setFont(new Font("Serif",Font.BOLD,20));
+        jpm1.add(username_label);
+        jpm1.add(jtf);
+
+        jpm2=new JPanel();
+        password_labeo=new JLabel("Password");
+        password_labeo.setFont(new Font("Serif",Font.PLAIN,30));
+        password_labeo.setForeground(Color.blue);
+        jpf=new JPasswordField(15);
+        jpf.setFont(new Font("Serif",Font.BOLD,20));
+        jpm2.add(password_labeo);
+        jpm2.add(jpf);
+        
+		//south
+		jps=new JPanel();
+		register_btn=new JButton("Register");
+		register_btn.setFont(new Font("Snap ITC", Font.PLAIN, 24));
+		register_btn.addActionListener(this);
+		login=new JButton("  Login  ");
+		login.addActionListener(this);
+		login.setFont(new Font("Snap ITC", Font.PLAIN, 24));
+		jps.add(register_btn);
+		jps.add(login);
+		
+		//add the components to the interface
+		this.setLayout(new GridLayout(4,1));
+		this.add(logo,"North");
+		this.add(jpm1);
+		this.add(jpm2);
+		this.add(jps,"South");
+		
+		//set  the size, title, location and way to exit of the interface
+		this.setSize(502, 340);
+		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension framesize = this.getSize();
+		int x = (int)screensize.getWidth()/2 - (int)framesize.getWidth()/2;
+		int y = (int)screensize.getHeight()/2 - (int)framesize.getHeight()/2;
+		this.setLocation(x,y); 
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+        this.setTitle("Dussenger");
+	}
+
+	public static void main(String[] args) {
+		ClientLogin clientLogin=new ClientLogin();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		//set the response for JButton jps_jb1
+		if (e.getSource()==register_btn)
+		{
+			this.setVisible(false);
+			new ClientRegister();
+			
+		}
+		if(e.getSource() == login)
+		{
+			this.setVisible(false);
+			new MainInterface();
+		}
+	}
+
+}
