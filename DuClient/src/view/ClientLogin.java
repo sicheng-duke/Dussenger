@@ -94,13 +94,25 @@ public class ClientLogin extends JFrame implements ActionListener{
 			}
 			else{
 				
-				this.setVisible(false);
+				
 				UserInfo info = new UserInfo();
 				info.setUserId(usr_txt.getText());
 				info.setPasswd(new String(passwd_txt.getPassword()));
-				new Connection().loginInfo(info);
-				MainInterface main = new MainInterface(usr_txt.getText());
-				ManageChat.addView("1", main);
+				Connection conn = new Connection();
+				if(conn.loginInfo(info))
+				{
+					this.setVisible(false);
+					MainInterface main = new MainInterface(usr_txt.getText());
+					ManageChat.addView("1", main);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(panel_south, "Authentication fail");
+					usr_txt.setText("");
+					passwd_txt.setText("");
+				}
+				
+				
 			}
 		}
 	}

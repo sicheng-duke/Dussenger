@@ -34,7 +34,6 @@ public class connect {
 	            }	
 	}
 	
-	
 	public void close()
 	{
 		try {

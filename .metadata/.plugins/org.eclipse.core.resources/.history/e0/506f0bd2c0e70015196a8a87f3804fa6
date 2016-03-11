@@ -4,7 +4,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import com.auth.*;
 
 import java.util.*;
 public class relation {
@@ -18,8 +17,6 @@ public class relation {
 		conn = relconnect.getConn();
 		try {
 			print = getFriend("Bcc");
-			InfoAdd a = new InfoAdd();
-			System.out.println(a.authUsr("Bcc"));
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

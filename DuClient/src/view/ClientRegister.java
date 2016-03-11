@@ -73,7 +73,7 @@ public class ClientRegister extends JFrame implements ActionListener{
 		this.add(jps,"South");
 		
 		//set  the size, title, location and way to exit of the interface
-		this.setSize(502, 500);
+		this.setSize(510, 500);
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension framesize = this.getSize();
 		int x = (int)screensize.getWidth()/2 - (int)framesize.getWidth()/2;

@@ -1,9 +1,9 @@
 package com.server;
-import com.auth.*;
 import com.database.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import com.test.*;
 
 import common.*;
 public class Server {
@@ -24,23 +24,9 @@ public class Server {
 				ObjectInputStream ois=new ObjectInputStream(s.getInputStream());
 				UserInfo u=(UserInfo)ois.readObject();
 				System.out.println(u.getUserId()+ " : " + u.getPasswd());
-				ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
-				if(u.getPasswd().equals("123"))
-				{
-					Message reply = new Message();
-					reply.setMesType(MessageType.login_success);
-					oos.writeObject(reply);
-					ServerThread thread=new ServerThread(s);
-					ManageThread.addThread(u.getUserId(), thread);
-					thread.start();
-				}
-				else
-				{
-					Message reply = new Message();
-					reply.setMesType(MessageType.login_fail);
-					oos.writeObject(reply);
-					s.close();
-				}
+				ServerThread thread=new ServerThread(s);
+				ManageThread.addThread(u.getUserId(), thread);
+				thread.start();
 					
 			}
 		} catch (Exception e) {

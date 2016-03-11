@@ -41,6 +41,12 @@ import java.awt.SystemColor;
 public class MainInterface extends JFrame implements ActionListener{
 	private JTextField tf_search;
 	private JLabel[] friend;
+	public JLabel[] getFriend() {
+		return friend;
+	}
+	public void setFriend(JLabel[] friend) {
+		this.friend = friend;
+	}
 	private int[] friendArray;
 	private JScrollPane friendlist;
 	private JTextField tf_NoChat;
@@ -133,6 +139,7 @@ public class MainInterface extends JFrame implements ActionListener{
 		for(int i = 0; i < 50; i++){
 			friendArray[i] = i;
 			friend[i] = new JLabel(""+i);
+			
 			friend[i].addMouseListener(new MouseAdapter(){
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -142,6 +149,7 @@ public class MainInterface extends JFrame implements ActionListener{
 						newChatBox(friendID);
 					}
 				}
+				
 				@Override
 				public void mouseEntered(MouseEvent e) {
 					JLabel curr = (JLabel) e.getSource();
@@ -247,6 +255,7 @@ public class MainInterface extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnSend){
 			try {
+				
 				Message m = new Message();
 				m.setGetter(this.target);
 				m.setSender(this.usr);
@@ -254,6 +263,7 @@ public class MainInterface extends JFrame implements ActionListener{
 				ObjectOutputStream oos=new ObjectOutputStream
 				(ManageThread.getClientConServerThread(this.usr).getS().getOutputStream());
 				oos.writeObject(m);
+				currTalk.setText("");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				// TODO: handle exception
