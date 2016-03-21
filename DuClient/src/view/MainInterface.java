@@ -34,6 +34,8 @@ import controller.ManageThread;
 import java.awt.Font;
 import java.awt.Component;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
+
 import java.awt.SystemColor;
 /*
  * this class is for the main interface after user login Dussenger
@@ -99,18 +101,18 @@ public class MainInterface extends JFrame implements ActionListener{
 		search.add(searchbtn);
 		
 		tf_Name = new JTextField();
-		tf_Name.setBounds(80, 6, 196, 38);
+		tf_Name.setBounds(162, 6, 114, 38);
 		search.add(tf_Name);
 		tf_Name.setColumns(10);
 		
 		tf_ID = new JTextField();
-		tf_ID.setBounds(80, 54, 196, 38);
+		tf_ID.setBounds(162, 54, 114, 38);
 		search.add(tf_ID);
 		tf_ID.setColumns(10);
 		
 		JLabel lbl_Name = new JLabel("Name:");
 		lbl_Name.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_Name.setBounds(7, 6, 61, 38);
+		lbl_Name.setBounds(111, 6, 61, 38);
 		search.add(lbl_Name);
 		
 		btnSend = new JButton("send");
@@ -119,8 +121,12 @@ public class MainInterface extends JFrame implements ActionListener{
 		btnSend.addActionListener(this);
 		JLabel lbl_ID = new JLabel("ID:");
 		lbl_ID.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_ID.setBounds(6, 54, 61, 38);
+		lbl_ID.setBounds(111, 54, 61, 38);
 		search.add(lbl_ID);
+		//user's phote, updated when connected to database
+		JLabel lbl_Photo = new JLabel(new ImageIcon("image_material/duke_bluedevil.png"));
+		lbl_Photo.setBounds(6, 6, 107, 86);
+		search.add(lbl_Photo);
 		searchbtn.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -270,11 +276,6 @@ public class MainInterface extends JFrame implements ActionListener{
 			}
 		}
 		
-	}
-	
-	
-	
-	
-	
+	}	
 }
 
