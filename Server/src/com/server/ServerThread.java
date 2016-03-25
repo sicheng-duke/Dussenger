@@ -30,6 +30,7 @@ public class ServerThread extends Thread {
 				{
 					System.out.println("Use:"+m.getSender()+" logout");
 					ManageThread.getThread(m.getSender()).interrupt();
+					ManageThread.removeThread(m.getSender());
 					return;
 				}
 				else

@@ -1,11 +1,13 @@
 package controller;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.io.*;
 import java.net.*;
 import common.*;
 import view.*;
 import javax.swing.*;
+import java.util.*;
 public class ClientThread extends Thread {
 	
 	private Socket s;
@@ -49,8 +51,9 @@ public class ClientThread extends Thread {
 					else
 						s = s + info;
 					ManageChat.addCon(m.getSender(), s);
-					JLabel[] l = main.getFriend();
-					l[Integer.parseInt(m.getSender())].setForeground(Color.RED);
+					HashMap map = main.getFriend();
+					((Component) map.get(m.getSender())).setForeground(Color.RED);
+					
 				}
 			}
 				

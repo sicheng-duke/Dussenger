@@ -7,29 +7,19 @@ import java.sql.Statement;
 import com.auth.*;
 
 import java.util.*;
-public class relation {
+public class Relation {
 	private Connection conn;
 	private Statement stmt;
-	public relation()
+	public Relation()
 	{
 		connect relconnect = new connect();
 		relconnect.connectDatabase();
-		List<String> print = null;
 		conn = relconnect.getConn();
-		try {
-			print = getFriend("Bcc");
-			InfoAdd a = new InfoAdd();
-			System.out.println(a.authUsr("Bcc"));
-		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for(String s: print)
-		{
-			System.out.println(s);
-		}
+
 	}
 	
+	
+
 	
 	public List<String>  getFriend(String s) throws Throwable
 	{

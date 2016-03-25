@@ -1,55 +1,39 @@
 package view;
 
-import java.awt.EventQueue;
-import java.awt.GridLayout;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
 import java.util.ArrayList;
-
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
-import java.awt.Color;
+
 
 import javax.swing.UIManager;
 
-import common.Message;
-import common.MessageType;
-import common.UserInfo;
-import controller.Connection;
-import controller.ManageChat;
-import controller.ManageThread;
 
-import java.awt.Font;
-import java.awt.Component;
+import common.*;
+import controller.*;
+
+
+import java.awt.*;
 import javax.swing.Box;
-import javax.swing.ImageIcon;
 
-import java.awt.SystemColor;
+
+import java.util.*;
 /*
  * this class is for the main interface after user login Dussenger
  */
 public class MainInterface extends JFrame implements ActionListener{
 	private JTextField tf_search;
-	private JLabel[] friend;
-	public JLabel[] getFriend() {
+	private HashMap friend;
+	public HashMap getFriend() {
 		return friend;
 	}
-	public void setFriend(JLabel[] friend) {
+	public void setFriend(HashMap friend) {
 		this.friend = friend;
 	}
-	private int[] friendArray;
+	private String[] friendArray;
 	private JScrollPane friendlist;
 	private JTextField tf_NoChat;
 	private JPanel search;
@@ -60,14 +44,17 @@ public class MainInterface extends JFrame implements ActionListener{
 	private JTextArea oldTalk;
 	private JTextArea currTalk;
 	private JButton searchbtn;
-	private JTextField tf_Name;
-	private JTextField tf_ID;
+	private JLabel tf_Name;
+	private JLabel tf_ID;
 	private JButton btnSend;
+	
+	
+	private ArrayList<String> relation;
 	/**
 	 * Create the frame.
 	 */
 	private String usr;
-	private String target;
+	private String target = "%%";
 	public String getTarget() {
 		return target;
 	}
@@ -100,19 +87,19 @@ public class MainInterface extends JFrame implements ActionListener{
 		searchbtn.setHorizontalAlignment(SwingConstants.LEADING);
 		search.add(searchbtn);
 		
-		tf_Name = new JTextField();
-		tf_Name.setBounds(162, 6, 114, 38);
+		tf_Name = new JLabel();
+		tf_Name.setBounds(80, 6, 196, 38);
 		search.add(tf_Name);
-		tf_Name.setColumns(10);
+		tf_Name.setText(usr);
 		
-		tf_ID = new JTextField();
-		tf_ID.setBounds(162, 54, 114, 38);
+		tf_ID = new JLabel();
+		tf_ID.setBounds(80, 54, 196, 38);
 		search.add(tf_ID);
-		tf_ID.setColumns(10);
+		tf_ID.setText("TBD");
 		
 		JLabel lbl_Name = new JLabel("Name:");
 		lbl_Name.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_Name.setBounds(111, 6, 61, 38);
+		lbl_Name.setBounds(7, 6, 61, 38);
 		search.add(lbl_Name);
 		
 		btnSend = new JButton("send");
@@ -121,32 +108,36 @@ public class MainInterface extends JFrame implements ActionListener{
 		btnSend.addActionListener(this);
 		JLabel lbl_ID = new JLabel("ID:");
 		lbl_ID.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_ID.setBounds(111, 54, 61, 38);
+		lbl_ID.setBounds(6, 54, 61, 38);
 		search.add(lbl_ID);
-		//user's phote, updated when connected to database
-		JLabel lbl_Photo = new JLabel(new ImageIcon("image_material/duke_bluedevil.png"));
-		lbl_Photo.setBounds(6, 6, 107, 86);
-		search.add(lbl_Photo);
 		searchbtn.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String friendID =tf_search.getText();
+				tf_search.setText("");
 				if(!search(friendID)){
 					System.out.println("not found");
 					new friendNotFound();
 				}
 			}		
 		});
+		relation = RelationManage.getRelation();
+		if(relation == null)
+			relation = new ArrayList();
+		int total_relation = relation.size();
 		friendPanel = new JPanel();		
-		friendPanel.setLayout(new GridLayout(50, 1, 4, 4));
+		friendPanel.setLayout(new GridLayout(total_relation, 1, 4, 4));
 		friendlist = new JScrollPane(friendPanel);
-		friend = new JLabel[50];
-		friendArray = new int[50];
-		for(int i = 0; i < 50; i++){
-			friendArray[i] = i;
-			friend[i] = new JLabel(""+i);
+		friend = new HashMap<String, JLabel>();
+		
+		friendArray = new String[total_relation];
+		for(int i = 0; i < total_relation; i++){
+			String friend_i = relation.get(i);
+			friendArray[i] = friend_i;
+			friend.put(friend_i, new JLabel(friend_i));
+
 			
-			friend[i].addMouseListener(new MouseAdapter(){
+			((Component) friend.get(friend_i)).addMouseListener(new MouseAdapter(){
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					if(e.getClickCount() == 2){
@@ -167,7 +158,7 @@ public class MainInterface extends JFrame implements ActionListener{
 					curr.setForeground(Color.BLACK);
 				}
 			});
-			friendPanel.add(friend[i]);
+			friendPanel.add((Component) friend.get(friend_i));
 		}
 		
 		friendlist.setBounds(6, 166, 282, 345);
@@ -245,7 +236,7 @@ public class MainInterface extends JFrame implements ActionListener{
 	}
 	public boolean search(String friendID){
 		for(int i = 0; i < friendArray.length; i++){
-			if(friendID.equals(Integer.toString(friendArray[i]))){
+			if(friendID.equals(friendArray[i])){
 				newChatBox(friendID);
 				return true;
 			}
@@ -276,6 +267,11 @@ public class MainInterface extends JFrame implements ActionListener{
 			}
 		}
 		
-	}	
+	}
+	
+	
+	
+	
+	
 }
 

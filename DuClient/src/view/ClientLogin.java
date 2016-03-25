@@ -71,9 +71,6 @@ public class ClientLogin extends JFrame implements ActionListener{
         this.setTitle("Dussenger");
 	}
 
-	public static void main(String[] args) {
-		ClientLogin clientLogin=new ClientLogin();
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -96,6 +93,7 @@ public class ClientLogin extends JFrame implements ActionListener{
 				
 				
 				UserInfo info = new UserInfo();
+				info.setMsg_type(0);
 				info.setUserId(usr_txt.getText());
 				info.setPasswd(new String(passwd_txt.getPassword()));
 				Connection conn = new Connection();

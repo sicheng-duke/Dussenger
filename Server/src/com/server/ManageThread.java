@@ -17,5 +17,17 @@ public class ManageThread {
 	{
 		return (ServerThread)hm.get(id);
 	}
+	
+	public static void removeThread(String id)
+	{
+		hm.remove(id);
+		
+	}
+	
+	public static boolean userOnline(String id)
+	{
+		return hm.containsKey(id);
+		
+	}
 
 }

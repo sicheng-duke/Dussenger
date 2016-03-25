@@ -1,20 +1,27 @@
 package view;
 
 import javax.swing.*;
+
+import common.Message;
+import common.UserInfo;
+import controller.ManageChat;
+import controller.ManageThread;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;  
-
+import controller.*;
 public class ClientRegister extends JFrame implements ActionListener{
 	//error message frame
 	private JFrame errFrame;
-	
+	//should not contain %:%
 	//set the components for the interface
 	JPanel jpm1,jpm2,jpm3,jps;
 	JLabel jbln, jpm1_jbl,jpm2_jbl,jpm3_jbl;
-	JTextField jtf;
-    JPasswordField jpf1,jpf2;
-    JButton jps_jb1,jps_jb2;
+	JTextField usr_txt;
+    JPasswordField passwd_txt,passwd_confirm;
+    JButton register,cancel;
     
     char[] password1;
     char[] password2;
@@ -30,39 +37,39 @@ public class ClientRegister extends JFrame implements ActionListener{
         jpm1_jbl=new JLabel("   Set username     ");
         jpm1_jbl.setFont(new Font("Serif",Font.PLAIN,30));
         jpm1_jbl.setForeground(Color.blue);
-        jtf=new JTextField(15);
-        jtf.setFont(new Font("Serif",Font.BOLD,20));
+        usr_txt=new JTextField(15);
+        usr_txt.setFont(new Font("Serif",Font.BOLD,20));
         jpm1.add(jpm1_jbl);
-        jpm1.add(jtf);
+        jpm1.add(usr_txt);
 
         jpm2=new JPanel();
         jpm2_jbl=new JLabel("   Set password     ");
         jpm2_jbl.setFont(new Font("Serif",Font.PLAIN,30));
         jpm2_jbl.setForeground(Color.blue);
-        jpf1=new JPasswordField(15);
-        jpf1.setFont(new Font("Serif",Font.BOLD,20));
+        passwd_txt=new JPasswordField(15);
+        passwd_txt.setFont(new Font("Serif",Font.BOLD,20));
         jpm2.add(jpm2_jbl);
-        jpm2.add(jpf1);
+        jpm2.add(passwd_txt);
         
         jpm3=new JPanel();
         jpm3_jbl=new JLabel("Confirm password ");
         jpm3_jbl.setFont(new Font("Serif",Font.PLAIN,30));
         jpm3_jbl.setForeground(Color.blue);
-        jpf2=new JPasswordField(15);
-        jpf2.setFont(new Font("Serif",Font.BOLD,20));
+        passwd_confirm=new JPasswordField(15);
+        passwd_confirm.setFont(new Font("Serif",Font.BOLD,20));
         jpm3.add(jpm3_jbl);
-        jpm3.add(jpf2);
+        jpm3.add(passwd_confirm);
         
 		//south
 		jps=new JPanel();
-		jps_jb1=new JButton("Confirm");
-		jps_jb1.setFont(new Font("Serif", Font.PLAIN, 30));
-		jps_jb1.addActionListener(this);
-		jps_jb2=new JButton("  Cancel  ");
-		jps_jb2.setFont(new Font("Serif", Font.PLAIN, 30));
-		jps_jb2.addActionListener(this);
-		jps.add(jps_jb1);
-		jps.add(jps_jb2);
+		register=new JButton("Confirm");
+		register.setFont(new Font("Serif", Font.PLAIN, 30));
+		register.addActionListener(this);
+		cancel=new JButton("  Cancel  ");
+		cancel.setFont(new Font("Serif", Font.PLAIN, 30));
+		cancel.addActionListener(this);
+		jps.add(register);
+		jps.add(cancel);
 		
 		//add the components to the interface
 		this.setLayout(new GridLayout(5,1));
@@ -84,18 +91,18 @@ public class ClientRegister extends JFrame implements ActionListener{
         this.setTitle("Dussenger");
 	}
 
-	public static void main(String[] args) {
-		ClientRegister clientRegister=new ClientRegister();
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		//set the response for JButton jps_jb1 and jps_jb2 under different condition based on the content in JTextField jtf and JPasswordField jpf1,jpf2;
-		if (e.getSource()==jps_jb1)
+		if(e.getSource() == register){
+
+		}
+		if (e.getSource()==register)
 		{   
-            if(jtf.getText().length()==0||jpf1.getPassword().length==0)
+            if(usr_txt.getText().length()==0||passwd_txt.getPassword().length==0)
             {
-            	char[] password1 = jpf1.getPassword();
+            	char[] password1 = passwd_txt.getPassword();
             	JOptionPane.showMessageDialog(errFrame,  
                         "The username or password can not be empty, please enter again.",  
                         "Error",  
@@ -105,11 +112,36 @@ public class ClientRegister extends JFrame implements ActionListener{
             }
             else
             {
-				char[] password2 = jpf2.getPassword();  
+				char[] password2 = passwd_confirm.getPassword();  
 	            if (isPasswordMatched(password2)) 
 	            {
-	            	dispose();
-	            	new ClientLogin();
+	    			try {
+	    				
+	    				UserInfo info = new UserInfo();
+	    				info.setMsg_type(1);
+	    				info.setUserId(usr_txt.getText());
+	    				info.setPasswd(new String(passwd_txt.getPassword()));
+	    				Connection conn = new Connection();
+	    				if(conn.register(info))
+	    				{
+	    					this.setVisible(false);
+	    	            	dispose();
+	    	            	new ClientLogin();
+	    				}
+	    				else
+	    				{
+	    					//JOptionPane.showMessageDialog(panel_south, "Authentication fail");
+	    					JOptionPane.showMessageDialog(errFrame, "register fail, user exist");
+	    					System.out.println("register fail");
+	    					usr_txt.setText("");
+	    					passwd_txt.setText("");
+	    					passwd_confirm.setText("");
+	    				}
+	    			} catch (Exception e1) {
+	    				e1.printStackTrace();
+	    				// TODO: handle exception
+	    			}
+
 	            }
 	            else
 	            {
@@ -123,7 +155,7 @@ public class ClientRegister extends JFrame implements ActionListener{
             }
         }
 
-		if (e.getSource()==jps_jb2)
+		if (e.getSource()==cancel)
 		{
 			dispose();
 			new ClientLogin();
@@ -133,7 +165,7 @@ public class ClientRegister extends JFrame implements ActionListener{
 
 	private boolean isPasswordMatched(char[] password) {
         boolean isMatched = true;  
-        char[] correctPassword = jpf1.getPassword();  
+        char[] correctPassword = passwd_txt.getPassword();  
         //check if the content in JPasswordField jpf1 and jpf2 are matched
         if (password.length != correctPassword.length) {  
             isMatched = false;  
@@ -145,7 +177,8 @@ public class ClientRegister extends JFrame implements ActionListener{
         Arrays.fill(correctPassword, '0');  
   
         return isMatched;  
-    }  
+    } 
+
 
 
 }

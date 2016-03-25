@@ -2,9 +2,9 @@ package controller;
 import java.util.*;
 import view.*;
 public class ManageChat {
-	
+	//unread message
 	private static HashMap hm=new HashMap<String, String>();
-	
+	//maininterface
 	private static HashMap record = new HashMap<String, MainInterface>();
 	
 	public static void addView(String usr,MainInterface view)

@@ -1,5 +1,5 @@
 package common;
-
+import java.util.*;
 public class Message implements java.io.Serializable{
 
 	/**
@@ -13,6 +13,14 @@ public class Message implements java.io.Serializable{
 	private String getter;
 	private String con;
 	private String sendTime;
+	
+	private ArrayList<String> friendList;
+	public ArrayList<String> getFriendList() {
+		return friendList;
+	}
+	public void setFriendList(ArrayList<String> friendList) {
+		this.friendList = friendList;
+	}
 	public Message(){
 		this.mesType = MessageType.default_type;
 	}
