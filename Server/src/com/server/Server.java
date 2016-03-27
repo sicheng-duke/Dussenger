@@ -7,15 +7,20 @@ import java.util.*;
 
 import common.*;
 public class Server {
-
+	public static ArrayList<String> OnlineFriendList = new ArrayList<String> ();
+	public ArrayList<String> getOnlineFriendList() {
+		return OnlineFriendList;
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//System.out.println("server");
-		//initialize();
-		//relation rl = new relation();
+
+		//initialize();   //initialize database at first time 
+		//UserAuth auth = new UserAuth();
+		//auth.defaultInfo();
+		
 		
 		try {
-			String ss=InetAddress.getLocalHost().getHostAddress();
+			String ss=InetAddress.getLocalHost().getHostAddress(); //get local machine's ip address
 			System.out.println(ss);
 			ServerSocket socket = new ServerSocket(6543);
 			while(true)
@@ -27,8 +32,8 @@ public class Server {
 				if(u.getMsg_type() == 0)
 				System.out.println(u.getUserId()+ " : " + u.getPasswd());
 				ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());				
-
-				if(u.getMsg_type() == 0)
+				
+				if(u.getMsg_type() == 0) //for login 
 				{
 					if(ManageThread.userOnline(u.getUserId()))
 					{
@@ -39,14 +44,18 @@ public class Server {
 					}
 					else if(u.getPasswd().equals(auth.checkPasswd(u.getUserId())))
 					{
+						OnlineFriendList.add(u.getUserId());
 						Message reply = new Message();
 						Relation rel = new Relation();
+						reply.setGetter(u.getUserId());
 						reply.setMesType(MessageType.login_success);
 						reply.setFriendList((ArrayList)rel.getFriend(u.getUserId()));
+						reply.setOnlineFriendList(OnlineFriendList);
 						oos.writeObject(reply);
 						ServerThread thread=new ServerThread(s);
 						ManageThread.addThread(u.getUserId(), thread);
 						thread.start();
+						thread.NotifyOther_Login(u.getUserId());
 					}
 					else
 					{
@@ -56,7 +65,7 @@ public class Server {
 						s.close();
 					}				
 				}
-				else if(u.getMsg_type() == 1)
+				else if(u.getMsg_type() == 1)  //for register
 				{
 					
 					Message reply = new Message();
@@ -72,7 +81,7 @@ public class Server {
 					
 					System.out.println(u.getUserId()+ " : " + u.getPasswd());
 				}
-				else if(u.getMsg_type() == 2)
+				else if(u.getMsg_type() == 2)   //for ipconnect
 				{
 					Message reply = new Message();
 					reply.setMesType(MessageType.connect_success);
@@ -99,6 +108,7 @@ public class Server {
 	{
 		init  initial = new init();
 		initial.initDatabase();
-		UserAuth info = new UserAuth();
+		//UserAuth info = new UserAuth();
 	}
+	
 }

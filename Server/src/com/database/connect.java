@@ -21,15 +21,17 @@ public class connect {
 	    String PASSWORD = "ECE651";
 	        try { 
 	            Class.forName("org.postgresql.Driver"); 
-	            String url = "jdbc:postgresql://localhost/" + DATABASE + "?user=" + USER + "&password=" + PASSWORD; 
+	            String url = "jdbc:postgresql://localhost/" + DATABASE + "?user=" + USER + "&password=" + PASSWORD;
+	            //get a db connection object
 	            this.conn = DriverManager.getConnection(url);
 	            //conn.close();
-	            
 	            } 
-	            catch (ClassNotFoundException e) { 
+	            catch (ClassNotFoundException e) {
+	            	//exception for bad url or password
 	              e.printStackTrace(); 
 	            }
 	            catch (SQLException e) { 
+	            	//exception for jdbc driver not in classpath
 	                e.printStackTrace(); 
 	            }	
 	}

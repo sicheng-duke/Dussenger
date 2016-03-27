@@ -19,16 +19,16 @@ public class init {
 	        try { 
 	            Class.forName("org.postgresql.Driver"); 
 	            String url = "jdbc:postgresql://localhost/" + DATABASE + "?user=" + USER + "&password=" + PASSWORD; 
-	            this.conn = DriverManager.getConnection(url);
+	            this.conn = DriverManager.getConnection(url);  //get a connection object
 	            
-	            Statement stmt = null;
-	    		stmt = conn.createStatement();
+	            Statement stmt = null;  
+	    		stmt = conn.createStatement(); //get a statement object
 	            String user_info = "CREATE TABLE USERINFO " +
 	                         "(USERNAME    VARCHAR PRIMARY KEY     NOT NULL," +
 	                         " PASSWORD    VARCHAR                 NOT NULL   , " +
 	                         " AGE         INT   , " +
 	                         " ID          INT);";
-	            stmt.executeUpdate(user_info);
+	            stmt.executeUpdate(user_info);  //execute statement on creating user info table
 	            
 	            
 	            
@@ -36,7 +36,7 @@ public class init {
 	                         "(USERNAME VARCHAR  NOT NULL," +
 	                         " FRIEND   VARCHAR   NOT NULL,"+
 	                         " PRIMARY KEY(USERNAME, FRIEND)); ";
-	            stmt.executeUpdate(relation);
+	            stmt.executeUpdate(relation);  // execute statement on creating relationship table
 
 	            conn.close();
 	            

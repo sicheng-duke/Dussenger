@@ -53,9 +53,11 @@ public class Connection {
 			Message m = (Message)ois.readObject();
 			if(m.getMesType().equals(MessageType.login_success))
 			{
-				
 				ClientThread thread=new ClientThread(s);
 				RelationManage.setRelation(m.getFriendList());
+				RelationManage.setOnlineFriend(m.getOnlineFriendList());
+				//RelationManage.showRelation();
+				//RelationManage.showOnLineFriend();
 				thread.start();
 				ManageThread.addClientConServerThread(((UserInfo)login).getUserId(), thread);
 				return true;

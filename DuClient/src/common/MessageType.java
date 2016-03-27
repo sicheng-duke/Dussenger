@@ -9,6 +9,7 @@ public interface MessageType {
 	String register_fail = "4";	
 	String logout = "5";
 	String login_fail_usr_online = "6";
-	
+	String onLine_Friend = "7";
+    String offLine_Friend = "8";
 
 }

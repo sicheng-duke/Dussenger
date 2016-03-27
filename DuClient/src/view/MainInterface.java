@@ -8,18 +8,11 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 
-
-import javax.swing.UIManager;
-
-
 import common.*;
 import controller.*;
 
 
 import java.awt.*;
-import javax.swing.Box;
-
-
 import java.util.*;
 /*
  * this class is for the main interface after user login Dussenger
@@ -50,6 +43,7 @@ public class MainInterface extends JFrame implements ActionListener{
 	
 	
 	private ArrayList<String> relation;
+	private ArrayList<String> OnlineFriend;
 	/**
 	 * Create the frame.
 	 */
@@ -125,6 +119,8 @@ public class MainInterface extends JFrame implements ActionListener{
 		if(relation == null)
 			relation = new ArrayList();
 		int total_relation = relation.size();
+		OnlineFriend = RelationManage.getOnlineFriend();
+		int cnt_onlineFriend = OnlineFriend.size();
 		friendPanel = new JPanel();		
 		friendPanel.setLayout(new GridLayout(total_relation, 1, 4, 4));
 		friendlist = new JScrollPane(friendPanel);
@@ -146,7 +142,7 @@ public class MainInterface extends JFrame implements ActionListener{
 						newChatBox(friendID);
 					}
 				}
-				
+				/*
 				@Override
 				public void mouseEntered(MouseEvent e) {
 					JLabel curr = (JLabel) e.getSource();
@@ -157,9 +153,14 @@ public class MainInterface extends JFrame implements ActionListener{
 					JLabel curr = (JLabel) e.getSource();
 					curr.setForeground(Color.BLACK);
 				}
+				*/
 			});
 			friendPanel.add((Component) friend.get(friend_i));
 		}
+		for(int i = 0; i < cnt_onlineFriend; i++) {
+			((Component) friend.get(friendArray[i])).setForeground(Color.GREEN);
+		}
+		
 		
 		friendlist.setBounds(6, 166, 282, 345);
 		getContentPane().add(friendlist);
@@ -248,6 +249,25 @@ public class MainInterface extends JFrame implements ActionListener{
 		String info=m.getSender()+" to "+m.getGetter()+" :"+m.getCon()+"\r\n";
 		this.oldTalk.append(info);
 	}
+	
+	public void updateOnlineFriendList(String newUser) {
+		if (relation.contains(newUser)) {
+			//System.out.println("new user is: " + newUser);
+			Object m = friend.get(newUser);
+			((Component) m).setForeground(Color.GREEN);
+			
+		}
+	}
+	
+	public void updateOfflineFriendList(String newUser) {
+		if (relation.contains(newUser)) {
+			System.out.println("logoff user is: " + newUser);
+			Object m = friend.get(newUser);
+			((Component) m).setForeground(Color.BLACK);
+			
+		}
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnSend){

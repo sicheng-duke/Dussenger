@@ -14,11 +14,30 @@ public class Message implements java.io.Serializable{
 	private String con;
 	private String sendTime;
 	private ArrayList<String> friendList;
+	private ArrayList<String> onLineFriendList;
 	public ArrayList<String> getFriendList() {
 		return friendList;
 	}
 	public void setFriendList(ArrayList<String> friendList) {
 		this.friendList = friendList;
+	}
+	public ArrayList<String> getOnlineFriendList() {
+		return onLineFriendList;
+	}
+	public void setOnlineFriendList(ArrayList<String> onLineUser) {
+		ArrayList<String> intersection = new ArrayList<String>();
+		for (int i = 0; i < onLineUser.size(); i++) {
+			if (friendList.contains(onLineUser.get(i))) {
+				intersection.add(onLineUser.get(i));
+			}
+		}
+		this.onLineFriendList = intersection;			
+	}
+	public void show() {
+		System.out.println("for " + getter);
+		for (int i = 0; i < onLineFriendList.size(); i++) {
+			System.out.println(onLineFriendList.get(i));
+		}
 	}
 	public Message(){
 		this.mesType = MessageType.default_type;

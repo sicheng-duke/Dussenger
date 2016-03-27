@@ -9,6 +9,9 @@ public class UserInfo implements java.io.Serializable {
 	private String userId;
 	private String passwd;
 	private int Msg_type;
+	//0 -> login
+	//1->register
+	//2->ipconnect
 	public int getMsg_type() {
 		return Msg_type;
 	}

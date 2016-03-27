@@ -17,7 +17,7 @@ public class ManageChat {
 		return (MainInterface) record.get(usr);
 	}
 	
-
+ 
 	
 	public static void addCon(String Getter,String content)
 	{

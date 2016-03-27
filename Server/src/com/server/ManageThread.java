@@ -4,7 +4,7 @@ import java.util.*;
 
 public class ManageThread {
 
-	private static HashMap hm=new HashMap<String, ServerThread>();
+	public static HashMap hm=new HashMap<String, ServerThread>();
 	
 	//addThread
 	public static void addThread(String id,ServerThread thread)
