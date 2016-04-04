@@ -99,6 +99,8 @@ public class Server {
 			e.printStackTrace();
 		} 
 		
+		
+		
 	
 	}
 	
@@ -108,7 +110,8 @@ public class Server {
 	public static void initialize()
 	{
 		init  initial = new init();
-		initial.initDatabase();
+		initial.groupInit();
+		//initial.initDatabase();
 		//UserAuth info = new UserAuth();
 	}
 	

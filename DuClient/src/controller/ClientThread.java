@@ -59,6 +59,14 @@ public class ClientThread extends Thread {
 						main.updateOfflineFriendList(m.getCon());
 					}
 				}
+				else if (m.getMesType().equals(MessageType.createFail))
+				{
+					JOptionPane.showMessageDialog(main.getContentPane(), "Group Name Exist");
+				}
+				else if(m.getMesType().equals(MessageType.createSuccess))
+				{
+					JOptionPane.showMessageDialog(main.getContentPane(), "Group Create!");
+				}
 				else if(m.getMesType().equals(MessageType.returnRelation))
 				{
 					ArrayList<String> friendList = m.getFriendList();

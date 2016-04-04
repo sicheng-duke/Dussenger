@@ -11,6 +11,39 @@ import java.sql.DriverManager;
 public class init {
 
 	private Connection conn;
+	public void groupInit()
+	{
+		 String DATABASE = "Dussenger";
+		 String USER = "admin";
+		 String PASSWORD = "ECE651";
+		 try { 
+	            Class.forName("org.postgresql.Driver"); 
+	            String url = "jdbc:postgresql://localhost/" + DATABASE + "?user=" + USER + "&password=" + PASSWORD; 
+	            this.conn = DriverManager.getConnection(url);  //get a connection object
+	            
+	            Statement stmt = null;  
+	    		stmt = conn.createStatement(); //get a statement object
+	            String group = "CREATE TABLE GPCHAT " +
+                        "(NAME VARCHAR  NOT NULL," +
+                        " OWNER   VARCHAR   NOT NULL,"+
+                        " MEMBER   VARCHAR   NOT NULL,"+
+                        " PRIMARY KEY(NAME, OWNER)); ";
+	            stmt.executeUpdate(group);
+	            
+	            String groupRec = "CREATE TABLE GPRECORD " +
+                        "(USRNAME VARCHAR  NOT NULL," +
+                        " GPNAME   VARCHAR   NOT NULL,"+
+                        " PRIMARY KEY(USRNAME, GPNAME)); ";
+	            stmt.executeUpdate(groupRec);
+	            conn.close();
+		 }
+         catch (ClassNotFoundException e) { 
+             e.printStackTrace(); 
+           }
+           catch (SQLException e) { 
+               e.printStackTrace(); 
+           }
+	}
 	public void initDatabase()
 	{
 	    String DATABASE = "Dussenger";

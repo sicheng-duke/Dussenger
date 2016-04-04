@@ -68,6 +68,7 @@ public class MainInterface extends JFrame implements ActionListener{
 	
 	private JButton friend_btn;
 	private JButton group_btn;
+	private JButton create_group;
 	
 	private ArrayList<String> relation;
 	public void setRelation(ArrayList<String> relation) {
@@ -126,8 +127,13 @@ public class MainInterface extends JFrame implements ActionListener{
 		friend_btn.addActionListener(this);
 		
 		group_btn = new JButton("Group List");
-		group_btn.setBounds(100, 54, 100, 38);
+		group_btn.setBounds(100, 54, 90, 38);
 		search.add(group_btn);
+		
+		create_group = new JButton("More Group");
+		create_group.setBounds(190,54,90,38);
+		create_group.addActionListener(this);
+		search.add(create_group);
 		
 		
 		/*
@@ -364,6 +370,11 @@ public class MainInterface extends JFrame implements ActionListener{
 		{
 
 			updateFriendList();
+		}
+		if(e.getSource() == create_group)
+		{
+			new CreateGroup(usr);
+			
 		}
 		
 	}

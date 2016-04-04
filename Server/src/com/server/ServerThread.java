@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.database.GroupChat;
 import com.database.Relation;
 
 public class ServerThread extends Thread {
@@ -94,6 +95,34 @@ public class ServerThread extends Thread {
 					ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
 					oos.writeObject(reply);
 					rel.closeConn();
+				}
+				//create group
+				else if(m.getMesType().equals(MessageType.createGroup))
+				{
+					String name = m.getCon();
+					GroupChat cpChat = new GroupChat();
+					Message reply = new Message();
+					reply.setGetter(m.getSender());
+					if(cpChat.checkGroup(name))
+					{
+						reply.setMesType(MessageType.createSuccess);
+						ArrayList<String> str = m.getFriendList();
+						for(String s : str)
+						{
+							System.out.println(s);
+						}
+						System.out.println(m.getCon());
+						cpChat.setGroup(str, m.getCon());
+					}
+					else
+					{
+						reply.setMesType(MessageType.createFail);
+					}
+					ServerThread thread = ManageThread.getThread(m.getSender());
+					ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
+					oos.writeObject(reply);
+					cpChat.closeConn();
+					
 				}
 				//message forwarding
 				else

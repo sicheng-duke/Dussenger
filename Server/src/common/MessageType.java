@@ -13,4 +13,7 @@ public interface MessageType {
     String offLine_Friend = "8";
     String getRelation = "9";
     String returnRelation = "10";
+    String createGroup = "11";
+    String createSuccess = "12";
+    String createFail = "13";
 }

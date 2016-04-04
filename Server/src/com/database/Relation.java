@@ -34,7 +34,7 @@ public class Relation {
 	
 
 	
-	
+
 
 	
 	public List<String>  getFriend(String s) throws Throwable

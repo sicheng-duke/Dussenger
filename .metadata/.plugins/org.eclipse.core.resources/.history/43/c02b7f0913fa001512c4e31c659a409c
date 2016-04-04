@@ -1,0 +1,122 @@
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+
+import java.awt.event.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTextField;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+
+import javax.swing.*;
+
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+
+import java.util.*;
+public class CreateGroup extends JFrame implements ActionListener {
+
+	private JPanel contentPane;
+	private JTextField groupName;
+	private JScrollPane scrollPane;
+	private JPanel friendPanel;
+	private JButton cancelBtn;
+	private JButton submitBtn;
+	
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		new CreateGroup();
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public CreateGroup() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 300, 300);
+		setResizable(false);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel title = new JLabel("Please set name and member");
+		title.setBounds(63, 6, 189, 26);
+		contentPane.add(title);
+		
+		JLabel lblNewLabel = new JLabel("Group Name");
+		lblNewLabel.setBounds(41, 33, 83, 30);
+		contentPane.add(lblNewLabel);
+		
+		groupName = new JTextField();
+		groupName.setBounds(136, 35, 134, 26);
+		contentPane.add(groupName);
+		groupName.setColumns(10);
+		
+		
+		
+		friendPanel = new JPanel();
+		friendPanel.setLayout(new GridLayout(100, 1, 4, 4));
+		scrollPane = new JScrollPane(friendPanel);
+
+		for(int i = 0; i < 100; i++)
+		{
+			friendPanel.add(new JCheckBox("lsl"));
+		}
+		
+		
+		
+		cancelBtn = new JButton("Cancel");
+		scrollPane.setBounds(41, 70, 229, 160);
+		contentPane.add(scrollPane);
+		
+		cancelBtn.setBounds(41, 243, 117, 29);
+		cancelBtn.addActionListener(this);
+		contentPane.add(cancelBtn);
+		
+		submitBtn = new JButton("Submit");
+		submitBtn.setBounds(153, 243, 117, 29);
+		contentPane.add(submitBtn);
+		submitBtn.addActionListener(this);
+		
+		
+		
+
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == cancelBtn)
+		{
+			
+		}
+		if(e.getSource() == submitBtn)
+		{
+			ArrayList
+		}
+		
+	}
+	
+    public static ArrayList<Boolean> getAllJCheckBoxValue(Container ct, ArrayList<Boolean> list){
+        if(list==null){
+            list=new ArrayList<Boolean>();
+        }
+        int count=ct.getComponentCount();
+        for(int i=0;i<count;i++){
+            Component c=ct.getComponent(i);
+            if(c instanceof JCheckBox && ){
+
+                list.add(((JCheckBox)c).isSelected());
+            }
+        }
+        return list;
+    }
+}
