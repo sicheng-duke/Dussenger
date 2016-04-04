@@ -11,6 +11,22 @@ public class Message implements java.io.Serializable{
 
 	private String sender;
 	private String getter;
+	private String starter;
+	
+	public String getStarter() {
+		return starter;
+	}
+	public void setStarter(String starter) {
+		this.starter = starter;
+	}
+	private HashMap<String,String> groupMap;
+	public HashMap<String, String> getGroupMap() {
+		return groupMap;
+	}
+	public void setGroupMap(HashMap<String, String> groupMap) {
+		this.groupMap = groupMap;
+	}
+
 	private String con;
 	private String sendTime;
 	private ArrayList<String> friendList;

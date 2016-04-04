@@ -65,6 +65,70 @@ public class ServerThread extends Thread {
 		}
 	}
 	
+	public void returnGroup(Message m,String getter) throws Throwable
+	{
+		Message reply = new Message();
+		GroupChat gp = new GroupChat();
+		reply.setGetter(getter);
+		reply.setMesType(MessageType.returnGroup);
+		reply.setFriendList((ArrayList)gp.getGroup(m.getSender()));
+		reply.setGroupMap(gp.getGPMap(reply.getFriendList()));
+		ServerThread thread = ManageThread.getThread(getter);
+		if(thread != null)
+		{
+			ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
+			oos.writeObject(reply);
+		}
+		gp.closeConn();
+	}
+	
+	public void returnFriend(Message m) throws Throwable
+	{
+		Message reply = new Message();
+		Relation rel = new Relation();
+		reply.setGetter(m.getSender());
+		reply.setMesType(MessageType.returnRelation);
+		reply.setFriendList((ArrayList)rel.getFriend(m.getSender()));
+		reply.setOnlineFriendList(Server.OnlineFriendList);
+		ServerThread thread = ManageThread.getThread(m.getSender());
+		ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
+		oos.writeObject(reply);
+		rel.closeConn();
+	}
+
+	public boolean deleteGroup(String gpName,String usr) throws Throwable
+	{
+		GroupChat gp = new GroupChat();
+		boolean result = gp.deleteGroup(gpName, usr);
+		
+		gp.closeConn();
+		return result;
+		//true delete owner's group->notify other
+		//false delete member's group 
+	}
+	
+	public void createGroup(Message m) throws Throwable
+	{
+		String name = m.getCon();
+		GroupChat cpChat = new GroupChat();
+		Message reply = new Message();
+		reply.setGetter(m.getSender());
+		if(cpChat.checkGroup(name))
+		{
+			reply.setMesType(MessageType.createSuccess);
+			ArrayList<String> str = m.getFriendList();
+			cpChat.setGroup(str, m.getCon());
+		}
+		else
+		{
+			reply.setMesType(MessageType.createFail);
+		}
+		ServerThread thread = ManageThread.getThread(m.getSender());
+		ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
+		oos.writeObject(reply);
+		cpChat.closeConn();	
+	}
+	
 	public void run(){
 		
 		ObjectInputStream ois;
@@ -85,44 +149,71 @@ public class ServerThread extends Thread {
 				//get relation
 				else if(m.getMesType().equals(MessageType.getRelation))
 				{
-					Message reply = new Message();
-					Relation rel = new Relation();
-					reply.setGetter(m.getSender());
-					reply.setMesType(MessageType.returnRelation);
-					reply.setFriendList((ArrayList)rel.getFriend(m.getSender()));
-					reply.setOnlineFriendList(Server.OnlineFriendList);
-					ServerThread thread = ManageThread.getThread(m.getSender());
-					ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
-					oos.writeObject(reply);
-					rel.closeConn();
+					
+					returnFriend(m);
+				}
+				else if(m.getMesType().equals(MessageType.deleteGroup))
+				{
+					GroupChat gp = new GroupChat();
+					ArrayList<String> list = (ArrayList<String>) gp.getMember(m.getCon());
+					gp.closeConn();
+					if(deleteGroup(m.getCon(),m.getSender()))
+					{
+						for(String s:list)
+						{
+							returnGroup(m,s);
+						}
+					}
+					else
+					{
+						returnGroup(m,m.getSender());
+					}
+					
+				}
+				//get group request
+				else if(m.getMesType().equals(MessageType.getGroup))
+				{
+					returnGroup(m,m.getSender());
+					
 				}
 				//create group
 				else if(m.getMesType().equals(MessageType.createGroup))
 				{
-					String name = m.getCon();
-					GroupChat cpChat = new GroupChat();
-					Message reply = new Message();
-					reply.setGetter(m.getSender());
-					if(cpChat.checkGroup(name))
+					createGroup(m);
+					GroupChat gp = new GroupChat();
+					ArrayList<String> list = (ArrayList<String>) gp.getMember(m.getCon());
+					gp.closeConn();
+					for(String s:list)
 					{
-						reply.setMesType(MessageType.createSuccess);
-						ArrayList<String> str = m.getFriendList();
-						for(String s : str)
-						{
-							System.out.println(s);
-						}
-						System.out.println(m.getCon());
-						cpChat.setGroup(str, m.getCon());
+						returnGroup(m,s);
 					}
-					else
-					{
-						reply.setMesType(MessageType.createFail);
-					}
-					ServerThread thread = ManageThread.getThread(m.getSender());
-					ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
-					oos.writeObject(reply);
-					cpChat.closeConn();
 					
+				}
+				// groupMessage Forwarding
+				else if(m.getMesType().equals(MessageType.groupForward))
+				{
+					System.out.println("get message" + m.getCon());
+					GroupChat gp = new GroupChat();				
+					
+					ArrayList<String> member = (ArrayList<String>) gp.getMember(m.getGetter());
+					
+					for(String name : member)
+					{
+						System.out.println("group mem "+name);
+						Message reply = new Message();
+						reply.setMesType(MessageType.groupMessage);
+						reply.setCon(m.getCon());
+						reply.setSender(m.getGetter());
+						reply.setStarter(m.getSender());
+						ServerThread thread = ManageThread.getThread(name);
+						if(thread != null)
+						{
+							ObjectOutputStream oos=new ObjectOutputStream(thread.s.getOutputStream());
+							oos.writeObject(reply);
+						}
+						
+					}
+	
 				}
 				//message forwarding
 				else

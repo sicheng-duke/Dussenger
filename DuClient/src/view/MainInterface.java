@@ -67,6 +67,18 @@ public class MainInterface extends JFrame implements ActionListener{
 	
 	
 	private JButton friend_btn;
+	public JButton getFriend_btn() {
+		return friend_btn;
+	}
+	public void setFriend_btn(JButton friend_btn) {
+		this.friend_btn = friend_btn;
+	}
+	public JButton getGroup_btn() {
+		return group_btn;
+	}
+	public void setGroup_btn(JButton group_btn) {
+		this.group_btn = group_btn;
+	}
 	private JButton group_btn;
 	private JButton create_group;
 	
@@ -74,11 +86,27 @@ public class MainInterface extends JFrame implements ActionListener{
 	public void setRelation(ArrayList<String> relation) {
 		this.relation = relation;
 	}
+	//0 -> now chat with friend
+	//1 -> now chat with group
+	private int now_chat;
+	
+	public int getNow_chat() {
+		return now_chat;
+	}
+	public void setNow_chat(int now_chat) {
+		this.now_chat = now_chat;
+	}
 	private ArrayList<String> OnlineFriend;
 	/**
 	 * Create the frame.
 	 */
 	private String usr;
+	public String getUsr() {
+		return usr;
+	}
+	public void setUsr(String usr) {
+		this.usr = usr;
+	}
 	private String target = "%%";
 	public String getTarget() {
 		return target;
@@ -91,6 +119,7 @@ public class MainInterface extends JFrame implements ActionListener{
 //
 //	}
 	public MainInterface(String usr) {
+		this.now_chat = 0;
 		this.usr = usr;
 		setTitle("Dussenger");
 		setResizable(false);
@@ -128,6 +157,7 @@ public class MainInterface extends JFrame implements ActionListener{
 		
 		group_btn = new JButton("Group List");
 		group_btn.setBounds(100, 54, 90, 38);
+		group_btn.addActionListener(this);
 		search.add(group_btn);
 		
 		create_group = new JButton("More Group");
@@ -196,6 +226,7 @@ public class MainInterface extends JFrame implements ActionListener{
 						String friendID = ((JLabel)e.getSource()).getText();
 						System.out.println("wish to talk to friend " + friendID);
 						newChatBox(friendID);
+						
 					}
 					if(e.getButton() == MouseEvent.BUTTON3)
 					{
@@ -265,10 +296,12 @@ public class MainInterface extends JFrame implements ActionListener{
 	//when a friend is selected, chat box of that friend is opened
 	public void newChatBox(String friendID){
 		this.target = friendID;
-		
 		chatBox.removeAll();
 		hasChat = true;
-		tf_friendinfo = new JTextField("friend: " + friendID);
+		if(this.now_chat == 0)
+			tf_friendinfo = new JTextField("Friend: " + friendID);
+		else
+			tf_friendinfo = new JTextField("Group: " + friendID);
 		tf_friendinfo.setHorizontalAlignment(SwingConstants.CENTER);
 		tf_friendinfo.setBounds(6, -2, 411, 45);
 		tf_friendinfo.setEditable(false);
@@ -287,16 +320,22 @@ public class MainInterface extends JFrame implements ActionListener{
 		chatBox.add(btnSend);
 		chatBox.revalidate();
 		chatBox.repaint();
-		if(ManageChat.getCon(friendID) != null){
+		if(ManageChat.getCon(friendID) != null &&this.now_chat == 0){
 			oldTalk.append(ManageChat.getCon(friendID));
 			ManageChat.remove(friendID);
 			
+		}
+		if(ManageChat.getGPCon(friendID) != null && this.now_chat ==1)
+		{
+			oldTalk.append(ManageChat.getGPCon(friendID));
+			ManageChat.removeGPCon(friendID);
 		}
 		
 	}
 	public boolean search(String friendID){
 		if(friend.containsKey(friendID))
 		{
+			
 			newChatBox(friendID);
 			return true;
 		}
@@ -304,8 +343,18 @@ public class MainInterface extends JFrame implements ActionListener{
 	}
 	public void showMessage(Message m)
 	{
-		String info=m.getSender()+" to "+m.getGetter()+" :"+m.getCon()+"\r\n";
-		this.oldTalk.append(info);
+		if(this.now_chat == 0)
+		{
+			String info=m.getSender()+" to "+m.getGetter()+" : "+m.getCon()+"\r\n";
+			this.oldTalk.append(info);
+			ManageChat.remove(m.getSender());
+		}
+		else if(this.now_chat == 1)
+		{
+			String info = m.getStarter() + " to Group : " + m.getCon() + "\r\n";
+			this.oldTalk.append(info);
+			ManageChat.removeGPCon(m.getSender());
+		}
 	}
 	
 	
@@ -324,8 +373,22 @@ public class MainInterface extends JFrame implements ActionListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+	}
+	
+	public void updateGroup(){
+		Message m = new Message();
+		m.setGetter(this.usr);
+		m.setSender(this.usr);
+		m.setMesType(MessageType.getGroup);
+		ObjectOutputStream oos;
+		try {
+			oos = new ObjectOutputStream
+			(ManageThread.getClientConServerThread(this.usr).getS().getOutputStream());
+			oos.writeObject(m);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void updateOnlineFriendList(String newUser) {
@@ -352,6 +415,10 @@ public class MainInterface extends JFrame implements ActionListener{
 			try {
 				
 				Message m = new Message();
+				if(this.getNow_chat() == 1)
+				{
+					m.setMesType(MessageType.groupForward);
+				}
 				m.setGetter(this.target);
 				System.out.println("target is"+this.target);
 				m.setSender(this.usr);
@@ -373,8 +440,12 @@ public class MainInterface extends JFrame implements ActionListener{
 		}
 		if(e.getSource() == create_group)
 		{
-			new CreateGroup(usr);
-			
+			new CreateGroup(usr);	
+		}
+		if(e.getSource() == group_btn)
+		{
+			System.out.println("hello");
+			updateGroup();
 		}
 		
 	}
