@@ -1,0 +1,143 @@
+package controller;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.*;
+import java.net.*;
+import common.*;
+import view.*;
+import javax.swing.*;
+import java.util.*;
+public class ClientThread extends Thread {
+	
+	private Socket s;
+	
+	public Socket getS() {
+		return s;
+	}
+
+	public void setS(Socket s) {
+		this.s = s;
+	}
+
+	public ClientThread(Socket s){
+		this.s = s;
+	}
+	
+	public void run(){
+		
+		ObjectInputStream ois;
+		try {
+			while(true){
+				ois = new ObjectInputStream(s.getInputStream());
+				Message m=(Message)ois.readObject();
+				MainInterface main = ManageChat.getView("1");
+				if (m.getMesType().equals(MessageType.onLine_Friend)) {
+					//update friend list
+					//System.out.println("new user is:" + m.getCon());
+					//MainInterface main = ManageChat.getView("1");
+					if (main != null) {
+						main.updateOnlineFriendList(m.getCon());
+					}
+				} else if (m.getMesType().equals(MessageType.offLine_Friend)) {
+					//MainInterface main = ManageChat.getView("1");
+					if (main != null) {
+						main.updateOfflineFriendList(m.getCon());
+					}
+				}
+				else if(m.getMesType().equals(MessageType.returnRelation))
+				{
+					ArrayList<String> friendList = m.getFriendList();
+					for(String s:friendList)
+					{
+						System.out.println(s);
+					}
+					RelationManage.clearRelation();
+					RelationManage.setRelation(friendList);
+					main.getContentPane().remove(main.getFriendlist());
+					int total_relation = friendList.size();
+					JPanel friendPanel = new JPanel();		
+					friendPanel.setLayout(new GridLayout(total_relation, 1, 4, 4));
+					JScrollPane friend_scro = new JScrollPane(friendPanel);
+					for(int i = 0 ; i < total_relation; i++)
+					{
+						RelationManage.getFriendList().put(friend_i, new JLabel(friend_i));
+
+						
+						((Component) friend.get(friend_i)).addMouseListener(new MouseAdapter(){
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								if(e.getClickCount() == 2){
+									String friendID = ((JLabel)e.getSource()).getText();
+									System.out.println("wish to talk to friend " + friendID);
+									newChatBox(friendID);
+								}
+							}
+
+						});
+						friendPanel.add((Component) friend.get(friend_i));
+					}
+					friend_scro.setBounds(6, 166, 282, 345);
+					main.getContentPane().add(friend_scro);
+					main.setFriendlist(friend_scro);
+					
+					main.getContentPane().revalidate();
+					main.getContentPane().repaint();
+					
+					
+
+				}
+				
+				
+				else{
+					System.out.println("Sender: " + m.getSender()+"to");
+					System.out.println("Getter: " + m.getGetter());
+					System.out.println("Message:"+m.getCon()+"\n");
+					
+					//MainInterface main= ManageChat.getView("1");
+					
+					System.out.println(main.getTarget());
+					if(main.getTarget().equals(m.getSender()))
+					{
+						
+						main.showMessage(m);
+					}
+					else{
+						String s=ManageChat.getCon(m.getSender());
+						String info=m.getSender()+" to "+m.getGetter()+" :"+m.getCon()+"\r\n";
+						if(s == null)
+							s = info;
+						else
+							s = s + info;
+						ManageChat.addCon(m.getSender(), s);
+						HashMap map = main.getFriend();
+						((Component) map.get(m.getSender())).setForeground(Color.RED);
+						((Component) map.get(m.getSender())).addMouseListener(new MouseAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								if(e.getClickCount() == 2){
+									((Component) map.get(m.getSender())).setForeground(Color.GREEN);
+								}
+							}
+						});
+						
+					}
+				}
+			}
+				
+		}catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+			
+		
+	}
+	
+}
+	
+	
+
+

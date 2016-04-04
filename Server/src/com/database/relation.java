@@ -8,7 +8,11 @@ import com.auth.*;
 
 import java.util.*;
 public class Relation {
-	private Connection conn;
+	private   Connection conn;
+
+
+
+
 	private Statement stmt;
 	public Relation()
 	{
@@ -17,6 +21,18 @@ public class Relation {
 		conn = relconnect.getConn();
 
 	}
+	
+	public void closeConn()
+	{
+		try {
+			this.conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+
 	
 	
 

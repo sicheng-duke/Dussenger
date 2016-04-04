@@ -56,6 +56,7 @@ public class Server {
 						ManageThread.addThread(u.getUserId(), thread);
 						thread.start();
 						thread.NotifyOther_Login(u.getUserId());
+						rel.closeConn();
 					}
 					else
 					{

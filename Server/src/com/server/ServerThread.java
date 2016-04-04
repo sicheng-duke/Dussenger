@@ -2,8 +2,11 @@ package com.server;
 import common.*;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import com.database.Relation;
 
 public class ServerThread extends Thread {
 	
@@ -68,6 +71,7 @@ public class ServerThread extends Thread {
 			while(true){
 				ois = new ObjectInputStream(s.getInputStream());
 				Message m=(Message)ois.readObject();
+				//logout information
 				if(m.getMesType().equals(MessageType.logout))
 				{
 					new Server().OnlineFriendList.remove(m.getSender());
@@ -77,17 +81,40 @@ public class ServerThread extends Thread {
 					ManageThread.removeThread(m.getSender());
 					return;
 				}
+				//get relation
+				else if(m.getMesType().equals(MessageType.getRelation))
+				{
+					Message reply = new Message();
+					Relation rel = new Relation();
+					reply.setGetter(m.getSender());
+					reply.setMesType(MessageType.returnRelation);
+					reply.setFriendList((ArrayList)rel.getFriend(m.getSender()));
+					reply.setOnlineFriendList(Server.OnlineFriendList);
+					ServerThread thread = ManageThread.getThread(m.getSender());
+					ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
+					oos.writeObject(reply);
+					rel.closeConn();
+				}
+				//message forwarding
 				else
 				{
+					//System.out.println("from "+m.getSender()+" to " + m.getSender() + ": "+ m.getCon());
+					
 					ServerThread thread = ManageThread.getThread(m.getGetter());
-					ObjectOutputStream oos=new ObjectOutputStream(thread.s.getOutputStream());
-					oos.writeObject(m);
+					if(thread != null)
+					{
+						ObjectOutputStream oos=new ObjectOutputStream(thread.s.getOutputStream());
+						oos.writeObject(m);
+					}
 				}
 			}
 		} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			
 		}
 	

@@ -76,6 +76,36 @@ public class Connection {
 		
 	}
 	
+//	public boolean updateRelation(Object conn)
+//	{
+//		try {
+//			s = new Socket();
+//			s.connect(new InetSocketAddress(getServer_ip(),6543), 1000);
+//			ObjectOutputStream oos=new ObjectOutputStream(s.getOutputStream());
+//			oos.writeObject(conn);
+//
+//			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+//			Message m = (Message)ois.readObject();
+//			if(m.getMesType().equals(MessageType.returnRelation))
+//			{
+//				
+//				RelationManage.clearRelation();
+//				RelationManage.setRelation(m.getFriendList());
+//				RelationManage.setOnlineFriend(m.getOnlineFriendList());
+//				return true;
+//				
+//			}
+//			s.close();
+//			//return false;
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			
+//		}
+//		return false;
+//	
+//	}
+	
 	public boolean first_connect(Object conn)
 	{
 		

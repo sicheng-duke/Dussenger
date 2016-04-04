@@ -11,4 +11,6 @@ public interface MessageType {
 	String login_fail_usr_online = "6";
 	String onLine_Friend = "7";
     String offLine_Friend = "8";
+    String getRelation = "9";
+    String returnRelation = "10";
 }

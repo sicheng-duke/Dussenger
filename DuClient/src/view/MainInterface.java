@@ -26,12 +26,33 @@ public class MainInterface extends JFrame implements ActionListener{
 	public void setFriend(HashMap friend) {
 		this.friend = friend;
 	}
-	private String[] friendArray;
+
+	public JScrollPane getFriendlist() {
+		return friendlist;
+	}
+	public void setFriendlist(JScrollPane friendlist) {
+		this.friendlist = friendlist;
+	}
+	public JPanel getFriendPanel() {
+		return friendPanel;
+	}
+	public void setFriendPanel(JPanel friendPanel) {
+		this.friendPanel = friendPanel;
+	}
 	private JScrollPane friendlist;
+	private JPanel friendPanel;
+	
+	
 	private JTextField tf_NoChat;
 	private JPanel search;
-	private JPanel friendPanel;
+	
 	private JPanel chatBox;
+	public JPanel getChatBox() {
+		return chatBox;
+	}
+	public void setChatBox(JPanel chatBox) {
+		this.chatBox = chatBox;
+	}
 	private boolean hasChat = false;
 	private JTextField tf_friendinfo;
 	private JTextArea oldTalk;
@@ -41,8 +62,17 @@ public class MainInterface extends JFrame implements ActionListener{
 	private JLabel tf_ID;
 	private JButton btnSend;
 	
+	private JMenuItem add_to_group;
+	private JMenuItem delete_friend;
+	
+	
+	private JButton friend_btn;
+	private JButton group_btn;
 	
 	private ArrayList<String> relation;
+	public void setRelation(ArrayList<String> relation) {
+		this.relation = relation;
+	}
 	private ArrayList<String> OnlineFriend;
 	/**
 	 * Create the frame.
@@ -55,6 +85,10 @@ public class MainInterface extends JFrame implements ActionListener{
 	public void setTarget(String target) {
 		this.target = target;
 	}
+//	public static void main(String[] args) {
+//		MainInterface main = new MainInterface("c");
+//
+//	}
 	public MainInterface(String usr) {
 		this.usr = usr;
 		setTitle("Dussenger");
@@ -86,10 +120,22 @@ public class MainInterface extends JFrame implements ActionListener{
 		search.add(tf_Name);
 		tf_Name.setText(usr);
 		
+		friend_btn = new JButton("Friend List");
+		friend_btn.setBounds(6, 54, 90, 38);
+		search.add(friend_btn);
+		friend_btn.addActionListener(this);
+		
+		group_btn = new JButton("Group List");
+		group_btn.setBounds(100, 54, 100, 38);
+		search.add(group_btn);
+		
+		
+		/*
 		tf_ID = new JLabel();
 		tf_ID.setBounds(80, 54, 196, 38);
 		search.add(tf_ID);
 		tf_ID.setText("TBD");
+		*/
 		
 		JLabel lbl_Name = new JLabel("Name:");
 		lbl_Name.setHorizontalAlignment(SwingConstants.CENTER);
@@ -100,10 +146,12 @@ public class MainInterface extends JFrame implements ActionListener{
 		btnSend.setForeground(UIManager.getColor("Button.light"));
 		btnSend.setBounds(336, 358, 75, 29);
 		btnSend.addActionListener(this);
+		/*
 		JLabel lbl_ID = new JLabel("ID:");
 		lbl_ID.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_ID.setBounds(6, 54, 61, 38);
 		search.add(lbl_ID);
+		*/
 		searchbtn.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -124,41 +172,46 @@ public class MainInterface extends JFrame implements ActionListener{
 		friendPanel = new JPanel();		
 		friendPanel.setLayout(new GridLayout(total_relation, 1, 4, 4));
 		friendlist = new JScrollPane(friendPanel);
-		friend = new HashMap<String, JLabel>();
 		
-		friendArray = new String[total_relation];
+		friend = RelationManage.getFriendList();
+		
+		
 		for(int i = 0; i < total_relation; i++){
 			String friend_i = relation.get(i);
-			friendArray[i] = friend_i;
+
 			friend.put(friend_i, new JLabel(friend_i));
 
 			
 			((Component) friend.get(friend_i)).addMouseListener(new MouseAdapter(){
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					if(e.getClickCount() == 2){
+					if(e.getClickCount() == 2)
+					{
 						String friendID = ((JLabel)e.getSource()).getText();
 						System.out.println("wish to talk to friend " + friendID);
 						newChatBox(friendID);
 					}
+					if(e.getButton() == MouseEvent.BUTTON3)
+					{
+						JPopupMenu textMenu = new JPopupMenu();
+						add_to_group = new JMenuItem("Add to Group");
+						delete_friend = new JMenuItem("Delete Friend");
+
+						textMenu.add(add_to_group);
+						textMenu.add(delete_friend);
+	                    textMenu.show(e.getComponent(), e.getX(),  
+	                            e.getY()); 
+						
+					}
 				}
-				/*
-				@Override
-				public void mouseEntered(MouseEvent e) {
-					JLabel curr = (JLabel) e.getSource();
-					curr.setForeground(Color.BLUE);
-				}
-				@Override
-				public void mouseExited(MouseEvent e) {
-					JLabel curr = (JLabel) e.getSource();
-					curr.setForeground(Color.BLACK);
-				}
-				*/
+
 			});
 			friendPanel.add((Component) friend.get(friend_i));
 		}
+		
+		
 		for(int i = 0; i < cnt_onlineFriend; i++) {
-			((Component) friend.get(friendArray[i])).setForeground(Color.GREEN);
+			((Component) friend.get(OnlineFriend.get(i))).setForeground(Color.GREEN);
 		}
 		
 		
@@ -236,11 +289,10 @@ public class MainInterface extends JFrame implements ActionListener{
 		
 	}
 	public boolean search(String friendID){
-		for(int i = 0; i < friendArray.length; i++){
-			if(friendID.equals(friendArray[i])){
-				newChatBox(friendID);
-				return true;
-			}
+		if(friend.containsKey(friendID))
+		{
+			newChatBox(friendID);
+			return true;
 		}
 		return false;
 	}
@@ -248,6 +300,26 @@ public class MainInterface extends JFrame implements ActionListener{
 	{
 		String info=m.getSender()+" to "+m.getGetter()+" :"+m.getCon()+"\r\n";
 		this.oldTalk.append(info);
+	}
+	
+	
+	public void updateFriendList(){
+		
+		Message m = new Message();
+		m.setGetter(this.usr);
+		m.setSender(this.usr);
+		m.setMesType(MessageType.getRelation);
+		ObjectOutputStream oos;
+		try {
+			oos = new ObjectOutputStream
+			(ManageThread.getClientConServerThread(this.usr).getS().getOutputStream());
+			oos.writeObject(m);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 	
 	public void updateOnlineFriendList(String newUser) {
@@ -275,7 +347,9 @@ public class MainInterface extends JFrame implements ActionListener{
 				
 				Message m = new Message();
 				m.setGetter(this.target);
+				System.out.println("target is"+this.target);
 				m.setSender(this.usr);
+				System.out.println("usr is"+this.usr);
 				m.setCon(currTalk.getText());
 				ObjectOutputStream oos=new ObjectOutputStream
 				(ManageThread.getClientConServerThread(this.usr).getS().getOutputStream());
@@ -285,6 +359,11 @@ public class MainInterface extends JFrame implements ActionListener{
 				e1.printStackTrace();
 				// TODO: handle exception
 			}
+		}
+		if(e.getSource() == friend_btn)
+		{
+
+			updateFriendList();
 		}
 		
 	}

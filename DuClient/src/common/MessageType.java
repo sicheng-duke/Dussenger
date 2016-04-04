@@ -12,4 +12,6 @@ public interface MessageType {
 	String onLine_Friend = "7";
     String offLine_Friend = "8";
 
+    String getRelation = "9";
+    String returnRelation = "10";
 }
