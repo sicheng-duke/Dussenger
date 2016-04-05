@@ -27,4 +27,6 @@ public interface MessageType {
     String groupMessage = "17";
     
     String deleteGroup = "18";
+    
+    String change_passwd = "19";
 }

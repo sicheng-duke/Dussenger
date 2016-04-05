@@ -20,6 +20,15 @@ public class UserAuth {
 		InfoConn = infoAdd.getConn();
 		
 	}
+	public void close()
+	{
+		try {
+			InfoConn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public void defaultInfo()
 	{
 		String[] UserName = {"Abb","Bcc","Cdd","Dee","Eff","Fgg","Ghh","Hii"};
@@ -59,6 +68,11 @@ public class UserAuth {
 			return false;
 		}
 		return true;
+	}
+	public void changePasswd(String ID,String passwd) throws Throwable
+	{
+		stmt = InfoConn.createStatement();
+		stmt.execute("UPDATE USERINFO SET PASSWORD = '"+passwd+"' WHERE USERNAME = '"+ ID + "';");				
 	}
 	
 	public String checkPasswd(String ID) throws Throwable

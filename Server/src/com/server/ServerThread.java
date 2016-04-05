@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.auth.UserAuth;
 import com.database.GroupChat;
 import com.database.Relation;
 
@@ -188,6 +189,13 @@ public class ServerThread extends Thread {
 						returnGroup(m,s);
 					}
 					
+				}
+				//change passwd
+				else if(m.getMesType().equals(MessageType.change_passwd))
+				{
+					UserAuth usr = new UserAuth();
+					usr.changePasswd(m.getSender(), m.getCon());
+					usr.close();
 				}
 				// groupMessage Forwarding
 				else if(m.getMesType().equals(MessageType.groupForward))

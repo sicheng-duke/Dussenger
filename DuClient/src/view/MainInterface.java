@@ -67,6 +67,16 @@ public class MainInterface extends JFrame implements ActionListener{
 	
 	
 	private JButton friend_btn;
+	
+	private JButton message_btn;
+	
+	public JButton getMessage_btn() {
+		return message_btn;
+	}
+	public void setMessage_btn(JButton message_btn) {
+		this.message_btn = message_btn;
+	}
+	private JButton change_passwd;
 	public JButton getFriend_btn() {
 		return friend_btn;
 	}
@@ -135,20 +145,28 @@ public class MainInterface extends JFrame implements ActionListener{
 		search.setLayout(null);
 		
 		tf_search = new JTextField();
-		tf_search.setBounds(6, 104, 166, 45);
+		tf_search.setBounds(6, 104, 90, 38);
 		search.add(tf_search);
 		tf_search.setColumns(5);
 		
-		searchbtn = new JButton("Search Friend");
-		searchbtn.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
-		searchbtn.setBounds(184, 105, 92, 45);
-		searchbtn.setHorizontalAlignment(SwingConstants.LEADING);
+		searchbtn = new JButton("Find Friend");
+		searchbtn.setBounds(100, 104, 90, 38);
+		//searchbtn.setHorizontalAlignment(SwingConstants.LEADING);
 		search.add(searchbtn);
 		
+		message_btn = new JButton("Message");
+		message_btn.setBounds(190,104,90,38);
+		search.add(message_btn);
+		
 		tf_Name = new JLabel();
-		tf_Name.setBounds(80, 6, 196, 38);
+		tf_Name.setBounds(80, 6, 100, 38);
 		search.add(tf_Name);
 		tf_Name.setText(usr);
+		
+		change_passwd = new JButton("Passwd");
+		change_passwd.setBounds(190,6,90,38);
+		search.add(change_passwd);
+		change_passwd.addActionListener(this);
 		
 		friend_btn = new JButton("Friend List");
 		friend_btn.setBounds(6, 54, 90, 38);
@@ -446,6 +464,10 @@ public class MainInterface extends JFrame implements ActionListener{
 		{
 			System.out.println("hello");
 			updateGroup();
+		}
+		if(e.getSource() == change_passwd)
+		{
+			new ChangePasswd(this.usr);
 		}
 		
 	}
