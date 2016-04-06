@@ -72,7 +72,9 @@ public class GroupChat {
 		ResultSet rs = stmt.executeQuery("SELECT NAME FROM GPCHAT WHERE NAME = '"+ name + "';");
 		if(rs.next())
 		{
-			return false;
+			rs = stmt.executeQuery("SELECT GPNAME FROM GPRECORD WHERE GPNAME = '"+ name + "';");
+			if(rs.next())
+				return false;
 		}
 		return true;
 	}
@@ -133,6 +135,22 @@ public class GroupChat {
 			}
 		}
 		return false;
+	}
+	
+	public void updateGroup(String usr, String gpName) throws Throwable
+	{
+		stmt = conn.createStatement();
+		ResultSet rs1 = stmt.executeQuery("SELECT MEMBER FROM GPCHAT WHERE NAME = '"+ gpName + "';");
+		if(rs1.next())
+		{
+			String s = usr + "%:%" + rs1.getString("MEMBER") ;
+			stmt.execute("UPDATE GPCHAT SET MEMBER = '"+s+"' WHERE NAME = '"+ gpName + "';");
+			stmt.execute("INSERT INTO GPRECORD (USRNAME,GPNAME)"
+					+"VALUES('" + usr
+					+"','"+gpName
+					+"');");
+			
+		}
 	}
 	
 	public List<String>  getGroup(String s) throws Throwable

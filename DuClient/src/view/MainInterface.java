@@ -156,6 +156,7 @@ public class MainInterface extends JFrame implements ActionListener{
 		
 		message_btn = new JButton("Message");
 		message_btn.setBounds(190,104,90,38);
+		message_btn.addActionListener(this);
 		search.add(message_btn);
 		
 		tf_Name = new JLabel();
@@ -213,14 +214,14 @@ public class MainInterface extends JFrame implements ActionListener{
 				tf_search.setText("");
 				if(!search(friendID)){
 					System.out.println("not found");
-					new friendNotFound();
+					new NoFriend(usr);
 				}
 			}		
 		});
 		relation = RelationManage.getRelation();
 		if(relation == null)
 			relation = new ArrayList();
-		int total_relation = relation.size();
+		int total_relation = relation.size() < 7? 7:relation.size();
 		OnlineFriend = RelationManage.getOnlineFriend();
 		int cnt_onlineFriend = OnlineFriend.size();
 		friendPanel = new JPanel();		
@@ -230,7 +231,7 @@ public class MainInterface extends JFrame implements ActionListener{
 		friend = RelationManage.getFriendList();
 		
 		
-		for(int i = 0; i < total_relation; i++){
+		for(int i = 0; i < relation.size(); i++){
 			String friend_i = relation.get(i);
 
 			friend.put(friend_i, new JLabel(friend_i));
@@ -250,8 +251,30 @@ public class MainInterface extends JFrame implements ActionListener{
 					{
 						JPopupMenu textMenu = new JPopupMenu();
 						add_to_group = new JMenuItem("Add to Group");
+						add_to_group .addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								new AddToGroup(usr,friend_i);
+							}
+						});
 						delete_friend = new JMenuItem("Delete Friend");
-
+						delete_friend .addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								
+								Message reply = new Message();
+								reply.setMesType(MessageType.delete_friend);
+								reply.setSender(usr);
+								reply.setGetter(friend_i);
+								ObjectOutputStream oos;
+								try {
+									oos = new ObjectOutputStream(ManageThread.getClientConServerThread(usr).getS().getOutputStream());
+									oos.writeObject(reply);
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								
+							}
+						});
 						textMenu.add(add_to_group);
 						textMenu.add(delete_friend);
 	                    textMenu.show(e.getComponent(), e.getX(),  
@@ -350,6 +373,7 @@ public class MainInterface extends JFrame implements ActionListener{
 		}
 		
 	}
+	
 	public boolean search(String friendID){
 		if(friend.containsKey(friendID))
 		{
@@ -359,6 +383,7 @@ public class MainInterface extends JFrame implements ActionListener{
 		}
 		return false;
 	}
+	
 	public void showMessage(Message m)
 	{
 		if(this.now_chat == 0)
@@ -374,8 +399,7 @@ public class MainInterface extends JFrame implements ActionListener{
 			ManageChat.removeGPCon(m.getSender());
 		}
 	}
-	
-	
+		
 	public void updateFriendList(){
 		
 		Message m = new Message();
@@ -438,9 +462,9 @@ public class MainInterface extends JFrame implements ActionListener{
 					m.setMesType(MessageType.groupForward);
 				}
 				m.setGetter(this.target);
-				System.out.println("target is"+this.target);
+				
 				m.setSender(this.usr);
-				System.out.println("usr is"+this.usr);
+				
 				m.setCon(currTalk.getText());
 				ObjectOutputStream oos=new ObjectOutputStream
 				(ManageThread.getClientConServerThread(this.usr).getS().getOutputStream());
@@ -468,6 +492,11 @@ public class MainInterface extends JFrame implements ActionListener{
 		if(e.getSource() == change_passwd)
 		{
 			new ChangePasswd(this.usr);
+		}
+		if(e.getSource() == message_btn)
+		{
+			message_btn.setForeground(Color.black);
+			new MessageTable(this.usr);
 		}
 		
 	}

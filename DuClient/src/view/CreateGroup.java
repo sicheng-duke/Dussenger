@@ -74,12 +74,12 @@ public class CreateGroup extends JFrame implements ActionListener {
 		
 		
 		ArrayList<String> relation = RelationManage.getRelation();
-		int total_relation = relation.size();
+		int total_relation = relation.size() < 6 ? 6 :relation.size();
 		friendPanel = new JPanel();
 		friendPanel.setLayout(new GridLayout(total_relation, 1, 4, 4));
 		scrollPane = new JScrollPane(friendPanel);
 
-		for(int i = 0; i < total_relation; i++)
+		for(int i = 0; i < relation.size(); i++)
 		{
 			String friend_i = relation.get(i);
 			friendPanel.add(new JCheckBox(friend_i));

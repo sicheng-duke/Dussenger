@@ -40,8 +40,7 @@ public class IpGetter extends JFrame implements ActionListener{
         
 		this.setLayout(new GridLayout(2,1));
 		this.add(panel1);
-		this.add(panel2);
-		
+		this.add(panel2);		
 		this.setSize(402, 150);
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension framesize = this.getSize();

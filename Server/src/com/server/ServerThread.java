@@ -72,7 +72,7 @@ public class ServerThread extends Thread {
 		GroupChat gp = new GroupChat();
 		reply.setGetter(getter);
 		reply.setMesType(MessageType.returnGroup);
-		reply.setFriendList((ArrayList)gp.getGroup(m.getSender()));
+		reply.setFriendList((ArrayList)gp.getGroup(getter));
 		reply.setGroupMap(gp.getGPMap(reply.getFriendList()));
 		ServerThread thread = ManageThread.getThread(getter);
 		if(thread != null)
@@ -81,6 +81,52 @@ public class ServerThread extends Thread {
 			oos.writeObject(reply);
 		}
 		gp.closeConn();
+	}
+	
+	public void deleteFriend(Message m) throws Throwable
+	{
+		Relation rl = new Relation();
+		rl.deleteRelation(m.getGetter(), m.getSender());
+		Message m1 = new Message();
+		m1.setMesType(MessageType.delete_friend);
+		m1.setGetter(m.getSender());
+		m1.setSender(m.getGetter());
+		returnFriend(m);
+		returnFriend(m1);
+		rl.closeConn();
+		
+		
+	}
+	
+	public void noSuchUsr(Message m) throws Throwable
+	{
+		Message reply = new Message();
+		reply.setGetter(m.getSender());
+		reply.setMesType(MessageType.add_friend_not_exist);
+		ServerThread thread = ManageThread.getThread(m.getSender());
+		ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
+		oos.writeObject(reply);
+	}
+	
+	public void addRequest(Message m) throws Throwable
+	{
+		Message reply = new Message();
+		reply.setSender(m.getSender());
+		reply.setGetter(m.getCon());
+		reply.setMesType(MessageType.add_request);
+		String s = "Friend " + m.getSender() + " wants to add you";
+		reply.setCon(s);
+		ServerThread thread = ManageThread.getThread(m.getCon());
+		if(thread != null)
+		{
+			ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
+			oos.writeObject(reply);
+		}
+		else
+		{
+			ManageRequest.storeReq(m.getCon(), reply);
+		}
+		
 	}
 	
 	public void returnFriend(Message m) throws Throwable
@@ -92,9 +138,14 @@ public class ServerThread extends Thread {
 		reply.setFriendList((ArrayList)rel.getFriend(m.getSender()));
 		reply.setOnlineFriendList(Server.OnlineFriendList);
 		ServerThread thread = ManageThread.getThread(m.getSender());
-		ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
-		oos.writeObject(reply);
+		if(thread != null)
+		{
+			ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
+			oos.writeObject(reply);
+			NotifyOther_Login(reply.getGetter());
+		}
 		rel.closeConn();
+		
 	}
 
 	public boolean deleteGroup(String gpName,String usr) throws Throwable
@@ -130,6 +181,52 @@ public class ServerThread extends Thread {
 		cpChat.closeConn();	
 	}
 	
+	public void updateGroup(Message m, String gpName) throws Throwable
+	{
+		GroupChat gpChat = new GroupChat();
+		gpChat.updateGroup(m.getCon(), gpName);
+		gpChat.closeConn();
+				
+	}
+	
+	public void replyRequest(Message m, String type) throws Throwable
+	{
+		UserAuth auth = new UserAuth();
+		if(type.equals(MessageType.accept_add_request))
+		{
+			auth.setRelation(m.getGetter()+"%:%"+m.getSender());
+			auth.setRelation(m.getSender()+"%:%"+m.getGetter());
+		}
+		Message reply_to_sender = new Message();
+		Message reply_to_getter = new Message();
+		reply_to_sender.setMesType(type);
+		reply_to_sender.setGetter(m.getSender());
+		reply_to_sender.setSender(m.getGetter());
+		
+		reply_to_getter.setMesType(type);
+		reply_to_getter.setGetter(m.getGetter());
+		reply_to_getter.setSender(m.getSender());
+		
+		
+		
+		ServerThread thread_sender = ManageThread.getThread(m.getSender());
+		if(thread_sender != null )
+		{
+			ObjectOutputStream oos = new ObjectOutputStream(thread_sender.s.getOutputStream());
+			oos.writeObject(reply_to_sender);
+		}
+
+		
+		ServerThread thread_getter = ManageThread.getThread(m.getGetter());
+		if(thread_getter != null)
+		{
+			ObjectOutputStream oos = new ObjectOutputStream(thread_getter.s.getOutputStream());
+			oos.writeObject(reply_to_getter);
+			
+		}
+		auth.close();
+	}
+	
 	public void run(){
 		
 		ObjectInputStream ois;
@@ -147,12 +244,54 @@ public class ServerThread extends Thread {
 					ManageThread.removeThread(m.getSender());
 					return;
 				}
-				//get relation
-				else if(m.getMesType().equals(MessageType.getRelation))
+				// 
+				else if(m.getMesType().equals(MessageType.accept_add_request))
 				{
 					
+					//check whether they are friend
+					Relation rl = new Relation();
+					if(rl.checkRelation(m.getSender(), m.getSender()))
+					{
+						replyRequest(m,MessageType.accept_add_request);
+					}
+					rl.closeConn();
+					
+					System.out.println("receive accept");
+					
+				}
+				else if(m.getMesType().equals(MessageType.delete_friend))
+				{
+					
+					deleteFriend(m);
+				}
+				else if(m.getMesType().equals(MessageType.denny_add_request))
+				{
+					Relation rl = new Relation();
+					if(rl.checkRelation(m.getSender(), m.getSender()))
+					{
+						replyRequest(m,MessageType.denny_add_request);
+					}
+					rl.closeConn();
+					System.out.println("receive deny");
+				}
+				else if(m.getMesType().equals(MessageType.update_group))
+				{
+					
+					ArrayList<String> list = m.getFriendList();
+					
+					for(String s : list)
+					{
+						updateGroup(m,s);
+					}
+					returnGroup(m,m.getCon());
+				}
+				//get relation
+				else if(m.getMesType().equals(MessageType.getRelation))
+				{					
 					returnFriend(m);
 				}
+				
+				//delete Group
 				else if(m.getMesType().equals(MessageType.deleteGroup))
 				{
 					GroupChat gp = new GroupChat();
@@ -183,12 +322,28 @@ public class ServerThread extends Thread {
 					createGroup(m);
 					GroupChat gp = new GroupChat();
 					ArrayList<String> list = (ArrayList<String>) gp.getMember(m.getCon());
-					gp.closeConn();
+					
 					for(String s:list)
 					{
 						returnGroup(m,s);
 					}
-					
+					gp.closeConn();
+				}
+				//
+				else if(m.getMesType().equals(MessageType.add_friend))
+				{
+
+					UserAuth usr = new UserAuth();
+					if(usr.checkName(m.getCon()))
+					{
+
+						noSuchUsr(m);
+					}
+					else
+					{
+
+						addRequest(m);
+					}
 				}
 				//change passwd
 				else if(m.getMesType().equals(MessageType.change_passwd))

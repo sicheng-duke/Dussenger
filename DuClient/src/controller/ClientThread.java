@@ -3,6 +3,7 @@ package controller;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -20,6 +21,7 @@ public class ClientThread extends Thread {
 	private JMenuItem add_to_group;
 	private JMenuItem delete_friend;
 	private JMenuItem group_member;
+	private MainInterface main; 
 	public Socket getS() {
 		return s;
 	}
@@ -30,17 +32,341 @@ public class ClientThread extends Thread {
 
 	public ClientThread(Socket s){
 		this.s = s;
+		
+	}
+	
+	public void createGroupUI(Message m)
+	{
+		ArrayList<String> groupList = m.getFriendList();
+		main.getGroup_btn().setForeground(Color.black);
+		RelationManage.clearGroup();
+		RelationManage.setGroup(groupList);
+		main.getContentPane().remove(main.getFriendlist());
+		
+		int total_num = groupList.size() <=7 ? 7 : groupList.size();
+		
+		RelationManage.setGPMap(m.getGroupMap());
+		
+		JPanel groupPanel = new JPanel();
+		groupPanel.setLayout(new GridLayout(total_num,1,4,4));
+		
+		JScrollPane group_scro = new JScrollPane(groupPanel);
+		
+		
+		HashMap<String,JLabel> group_map = RelationManage.getFriendList();
+		group_map.clear();
+		//set current chat UI
+		main.setNow_chat(1);
+		for(int i = 0; i < groupList.size(); i++)
+		{
+			String group_i = groupList.get(i);
+			RelationManage.getFriendList().put(group_i, new JLabel(group_i));
+			((Component) group_map.get(group_i)).addMouseListener(new MouseAdapter(){
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if(e.getClickCount() == 2){
+						String friendID = ((JLabel)e.getSource()).getText();
+						System.out.println("wish to talk to group " + friendID);
+						main.newChatBox(friendID);
+						
+						((Component) group_map.get(group_i)).setForeground(Color.black);
+						
+					}
+					if(e.getButton() == MouseEvent.BUTTON3)
+					{
+						JPopupMenu textMenu = new JPopupMenu();
+						group_member = new JMenuItem("Member");
+						delete_friend = new JMenuItem("Delete");
+						group_member.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								
+								new GroupMember(RelationManage.getGPMap().get(group_i),group_i);
+							}
+						});
+						
+						delete_friend .addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								
+								Message reply = new Message();
+								reply.setMesType(MessageType.deleteGroup);
+								reply.setSender(main.getUsr());
+								reply.setCon(group_i);
+								ObjectOutputStream oos;
+								try {
+									oos = new ObjectOutputStream(s.getOutputStream());
+									oos.writeObject(reply);
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								
+							}
+						});
+
+						
+						
+						textMenu.add(group_member);
+						textMenu.add(delete_friend);
+						textMenu.show(e.getComponent(), e.getX(), e.getY());
+						
+						
+					}
+				}
+
+			});
+			
+			groupPanel.add((Component) group_map.get(group_i));
+			if(ManageChat.containGP(group_i))
+			{
+				((Component) group_map.get(group_i)).setForeground(Color.red);
+			}
+			
+		}
+		group_scro.setBounds(6, 166, 282, 345);
+		
+		main.setRelation(groupList);
+		main.getContentPane().add(group_scro);
+		main.setFriend(group_map);
+		main.setFriendPanel(groupPanel);
+		main.setFriendlist(group_scro);
+		
+		
+		
+		main.getChatBox().removeAll();
+		
+		
+		JTextField tf_NoChat = new JTextField();
+		tf_NoChat.setEditable(false);
+		tf_NoChat.setBackground(SystemColor.window);
+		tf_NoChat.setHorizontalAlignment(SwingConstants.CENTER);
+		tf_NoChat.setText("No Current Chat");
+		tf_NoChat.setBounds(105, 214, 220, 65);
+		main.getChatBox().add(tf_NoChat);
+		
+		main.setTarget("%%");
+		main.getContentPane().revalidate();
+		main.getContentPane().repaint();
+	}
+	
+	public void createFriendUI(Message m)
+	{
+		ArrayList<String> friendList = m.getFriendList();
+		main.getFriend_btn().setForeground(Color.black);
+		RelationManage.clearRelation();
+		RelationManage.setRelation(friendList);
+		main.getContentPane().remove(main.getFriendlist());
+		
+		
+		int total_relation = friendList.size() < 7 ? 7:friendList.size();
+		JPanel friendPanel = new JPanel();		
+		friendPanel.setLayout(new GridLayout(total_relation, 1, 4, 4));
+		JScrollPane friend_scro = new JScrollPane(friendPanel);
+		
+		ArrayList<String>OnlineFriend = RelationManage.getOnlineFriend();
+		System.out.println("online friend");
+		for(String s:OnlineFriend)
+		{
+			System.out.println(s);
+		}
+		int cnt_onlineFriend = OnlineFriend.size();
+		
+		
+		HashMap<String,JLabel> friend_map = RelationManage.getFriendList();
+		friend_map.clear();
+		main.setNow_chat(0);
+		for(int i = 0 ; i < friendList.size(); i++)
+		{
+			String friend_i = friendList.get(i);
+			RelationManage.getFriendList().put(friend_i, new JLabel(friend_i));
+
+			
+			((Component) friend_map.get(friend_i)).addMouseListener(new MouseAdapter(){
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if(e.getClickCount() == 2){
+						String friendID = ((JLabel)e.getSource()).getText();
+						System.out.println("wish to talk to friend " + friendID);
+						if(OnlineFriend.contains(friend_i))
+						{
+							((Component) friend_map.get(friend_i)).setForeground(Color.green);
+						}
+						else
+							((Component) friend_map.get(friend_i)).setForeground(Color.black);
+						main.newChatBox(friendID);
+						
+					}
+					if(e.getButton() == MouseEvent.BUTTON3)
+					{
+						JPopupMenu textMenu = new JPopupMenu();
+						add_to_group = new JMenuItem("Add to Group");
+						add_to_group .addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								new AddToGroup(main.getUsr(),friend_i);
+							}
+						});
+						delete_friend = new JMenuItem("Delete Friend");
+						delete_friend .addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								
+								Message reply = new Message();
+								reply.setMesType(MessageType.delete_friend);
+								reply.setSender(main.getUsr());
+								reply.setGetter(friend_i);
+								ObjectOutputStream oos;
+								try {
+									oos = new ObjectOutputStream(s.getOutputStream());
+									oos.writeObject(reply);
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								
+							}
+						});
+						textMenu.add(add_to_group);
+						textMenu.add(delete_friend);
+						textMenu.show(e.getComponent(), e.getX(), e.getY());
+						
+						
+					}
+				}
+
+			});
+			friendPanel.add((Component) friend_map.get(friend_i));
+			if(OnlineFriend.contains(friend_i))
+			{
+				((Component) friend_map.get(friend_i)).setForeground(Color.green);
+			}
+			if(ManageChat.containFriend(friend_i))
+			{
+				((Component) friend_map.get(friend_i)).setForeground(Color.red);
+			}
+			
+		}
+
+		
+		friend_scro.setBounds(6, 166, 282, 345);
+		
+		main.setRelation(friendList);
+		main.getContentPane().add(friend_scro);
+		main.setFriend(friend_map);
+		main.setFriendPanel(friendPanel);
+		main.setFriendlist(friend_scro);
+		main.getChatBox().removeAll();
+		
+		JTextField tf_NoChat = new JTextField();
+		tf_NoChat.setEditable(false);
+		tf_NoChat.setBackground(SystemColor.window);
+		tf_NoChat.setHorizontalAlignment(SwingConstants.CENTER);
+		tf_NoChat.setText("No Current Chat");
+		tf_NoChat.setBounds(105, 214, 220, 65);
+		main.getChatBox().add(tf_NoChat);
+		
+		main.setTarget("%%");
+		main.getContentPane().revalidate();
+		main.getContentPane().repaint();
+		
+	}
+	
+	public void groupMessage(Message m)
+	{
+		System.out.println("gp message");
+		main.getGroup_btn().setForeground(Color.black);
+		if(main.getNow_chat() == 1)
+		{
+			main.getGroup_btn().setForeground(Color.black);
+			if(main.getTarget().equals(m.getSender()))
+			{
+				main.showMessage(m);
+			}
+			else
+			{
+				String s1 = ManageChat.getGPCon(m.getSender());
+				String info = m.getStarter()+ " to Group : " + m.getCon() + "\r\n";
+				if(s1 == null) s1 = info;
+				else s1 = s1 + info;
+				ManageChat.addGPCon(m.getSender(), s1);
+				HashMap map = main.getFriend();
+				((Component) map.get(m.getSender())).setForeground(Color.RED);
+			}
+		}
+		else
+		{
+			main.getGroup_btn().setForeground(Color.red);
+			String s = ManageChat.getGPCon(m.getSender());
+			String info = m.getStarter()+ " to Group : " + m.getCon() + "\r\n";
+			if(s == null) s = info;
+			else s = s + info;
+			ManageChat.addGPCon(m.getSender(), s);
+			
+			
+		}
+	}
+	
+	public void friendMessage(Message m)
+	{
+			System.out.println("Sender: " + m.getSender()+"to");
+			System.out.println("Getter: " + m.getGetter());
+			System.out.println("Message:"+m.getCon()+"\n");
+			
+			//MainInterface main= ManageChat.getView("1");
+			
+			System.out.println(main.getTarget());
+		if(main.getNow_chat() == 0)
+		{
+			main.getFriend_btn().setForeground(Color.black);
+			if(main.getTarget().equals(m.getSender()))
+			{
+				
+				main.showMessage(m);
+			}
+			else{
+				String s1=ManageChat.getCon(m.getSender());
+				String info=m.getSender()+" to "+m.getGetter()+" :"+m.getCon()+"\r\n";
+				if(s1 == null)
+					s1 = info;
+				else
+					s1 = s1 + info;
+				ManageChat.addCon(m.getSender(), s1);
+				HashMap map = main.getFriend();
+				((Component) map.get(m.getSender())).setForeground(Color.RED);
+				((Component) map.get(m.getSender())).addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) 
+					{
+						if(e.getClickCount() == 2 && RelationManage.getOnlineFriend().contains(m.getSender())){
+							((Component) map.get(m.getSender())).setForeground(Color.GREEN);
+						}
+						
+	
+					}
+					
+				});
+				
+			}
+		}
+		else
+		{
+			main.getFriend_btn().setForeground(Color.red);
+			String s1 = ManageChat.getCon(m.getSender());
+			String info=m.getSender()+" to "+m.getGetter()+" :"+m.getCon()+"\r\n";
+			if(s1 == null) s1 = info;
+			else s1 = s1 + info;
+			ManageChat.addCon(m.getSender(), s1);
+		}
 	}
 	
 	public void run(){
 		
 		ObjectInputStream ois;
 		group_member = new JMenuItem("Member");
+		
 		try {
-			while(true){
+			while(true)
+			{
 				ois = new ObjectInputStream(s.getInputStream());
 				Message m=(Message)ois.readObject();
-				MainInterface main = ManageChat.getView("1");
+				this.main = ManageChat.getView("1");
 				if (m.getMesType().equals(MessageType.onLine_Friend)) {
 					//update friend list
 					//System.out.println("new user is:" + m.getCon());
@@ -52,7 +378,9 @@ public class ClientThread extends Thread {
 						}
 						main.updateOnlineFriendList(m.getCon());
 					}
-				} else if (m.getMesType().equals(MessageType.offLine_Friend)) {
+				} 
+				else if (m.getMesType().equals(MessageType.offLine_Friend)) 
+				{
 					//MainInterface main = ManageChat.getView("1");
 					if (main != null) {
 						if(RelationManage.getOnlineFriend().contains(m.getCon()))
@@ -61,6 +389,29 @@ public class ClientThread extends Thread {
 						}
 						main.updateOfflineFriendList(m.getCon());
 					}
+				}
+				else if(m.getMesType().equals(MessageType.add_friend_not_exist))
+				{
+					JOptionPane.showMessageDialog(main.getContentPane(), "No Such Friend");
+				}
+				else if(m.getMesType().equals(MessageType.accept_add_request))
+				{
+					JOptionPane.showMessageDialog(main.getContentPane(), m.getSender()+" is your friend now");
+
+					main.updateFriendList();
+					
+				}
+				else if(m.getMesType().equals(MessageType.denny_add_request))
+				{
+					JOptionPane.showMessageDialog(main.getContentPane(), m.getSender()+" is not your friend");
+				}
+				else if(m.getMesType().equals(MessageType.add_request))
+				{
+					System.out.println("receive message");
+					main.getMessage_btn().setForeground(Color.red);
+					ManageRequest.addRequest(m);
+					//need to be done!
+					
 				}
 				else if (m.getMesType().equals(MessageType.createFail))
 				{
@@ -71,282 +422,20 @@ public class ClientThread extends Thread {
 					JOptionPane.showMessageDialog(main.getContentPane(), "Group Create!");
 				}
 				else if(m.getMesType().equals(MessageType.returnGroup))
-				{
-					
-					ArrayList<String> groupList = m.getFriendList();
-					main.getGroup_btn().setForeground(Color.black);
-					RelationManage.clearGroup();
-					RelationManage.setGroup(groupList);
-					main.getContentPane().remove(main.getFriendlist());
-					
-					int total_num = groupList.size() <=7 ? 7 : groupList.size();
-					
-					RelationManage.setGPMap(m.getGroupMap());
-					
-					JPanel groupPanel = new JPanel();
-					groupPanel.setLayout(new GridLayout(total_num,1,4,4));
-					
-					JScrollPane group_scro = new JScrollPane(groupPanel);
-					
-					
-					HashMap<String,JLabel> group_map = RelationManage.getFriendList();
-					group_map.clear();
-					//set current chat UI
-					main.setNow_chat(1);
-					for(int i = 0; i < groupList.size(); i++)
-					{
-						String group_i = groupList.get(i);
-						RelationManage.getFriendList().put(group_i, new JLabel(group_i));
-						((Component) group_map.get(group_i)).addMouseListener(new MouseAdapter(){
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								if(e.getClickCount() == 2){
-									String friendID = ((JLabel)e.getSource()).getText();
-									System.out.println("wish to talk to group " + friendID);
-									main.newChatBox(friendID);
-									
-									((Component) group_map.get(group_i)).setForeground(Color.black);
-									
-								}
-								if(e.getButton() == MouseEvent.BUTTON3)
-								{
-									JPopupMenu textMenu = new JPopupMenu();
-									group_member = new JMenuItem("Member");
-									delete_friend = new JMenuItem("Delete");
-									group_member.addActionListener(new ActionListener() {
-										public void actionPerformed(ActionEvent e) {
-											
-											new GroupMember(RelationManage.getGPMap().get(group_i),group_i);
-										}
-									});
-									
-									delete_friend .addActionListener(new ActionListener() {
-										public void actionPerformed(ActionEvent e) {
-											
-											Message reply = new Message();
-											reply.setMesType(MessageType.deleteGroup);
-											reply.setSender(main.getUsr());
-											reply.setCon(group_i);
-											ObjectOutputStream oos;
-											try {
-												oos = new ObjectOutputStream(s.getOutputStream());
-												oos.writeObject(reply);
-											} catch (IOException e1) {
-												// TODO Auto-generated catch block
-												e1.printStackTrace();
-											}
-											
-										}
-									});
-
-									
-									
-									textMenu.add(group_member);
-									textMenu.add(delete_friend);
-									textMenu.show(e.getComponent(), e.getX(), e.getY());
-									
-									
-								}
-							}
-
-						});
-						
-						groupPanel.add((Component) group_map.get(group_i));
-						if(ManageChat.containGP(group_i))
-						{
-							((Component) group_map.get(group_i)).setForeground(Color.red);
-						}
-						
-					}
-					group_scro.setBounds(6, 166, 282, 345);
-					
-					main.setRelation(groupList);
-					main.getContentPane().add(group_scro);
-					main.setFriend(group_map);
-					main.setFriendPanel(groupPanel);
-					main.setFriendlist(group_scro);
-					
-					main.getChatBox().removeAll();
-					main.setTarget("%%");
-					main.getContentPane().revalidate();
-					main.getContentPane().repaint();
-					
-	
+				{					
+					createGroupUI(m);	
 				}
 				else if(m.getMesType().equals(MessageType.returnRelation))
-				{
-					ArrayList<String> friendList = m.getFriendList();
-					main.getFriend_btn().setForeground(Color.black);
-					RelationManage.clearRelation();
-					RelationManage.setRelation(friendList);
-					main.getContentPane().remove(main.getFriendlist());
-					
-					
-					int total_relation = friendList.size();
-					JPanel friendPanel = new JPanel();		
-					friendPanel.setLayout(new GridLayout(total_relation, 1, 4, 4));
-					JScrollPane friend_scro = new JScrollPane(friendPanel);
-					
-					ArrayList<String>OnlineFriend = RelationManage.getOnlineFriend();
-					System.out.println("online friend");
-					for(String s:OnlineFriend)
-					{
-						System.out.println(s);
-					}
-					int cnt_onlineFriend = OnlineFriend.size();
-					
-					
-					HashMap<String,JLabel> friend_map = RelationManage.getFriendList();
-					friend_map.clear();
-					main.setNow_chat(0);
-					for(int i = 0 ; i < total_relation; i++)
-					{
-						String friend_i = friendList.get(i);
-						RelationManage.getFriendList().put(friend_i, new JLabel(friend_i));
-
-						
-						((Component) friend_map.get(friend_i)).addMouseListener(new MouseAdapter(){
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								if(e.getClickCount() == 2){
-									String friendID = ((JLabel)e.getSource()).getText();
-									System.out.println("wish to talk to friend " + friendID);
-									if(OnlineFriend.contains(friend_i))
-									{
-										((Component) friend_map.get(friend_i)).setForeground(Color.green);
-									}
-									else
-										((Component) friend_map.get(friend_i)).setForeground(Color.black);
-									main.newChatBox(friendID);
-									
-								}
-								if(e.getButton() == MouseEvent.BUTTON3)
-								{
-									JPopupMenu textMenu = new JPopupMenu();
-									add_to_group = new JMenuItem("Add to Group");
-									delete_friend = new JMenuItem("Delete Friend");
-									textMenu.add(add_to_group);
-									textMenu.add(delete_friend);
-									textMenu.show(e.getComponent(), e.getX(), e.getY());
-									
-									
-								}
-							}
-
-						});
-						friendPanel.add((Component) friend_map.get(friend_i));
-						if(OnlineFriend.contains(friend_i))
-						{
-							((Component) friend_map.get(friend_i)).setForeground(Color.green);
-						}
-						if(ManageChat.containFriend(friend_i))
-						{
-							((Component) friend_map.get(friend_i)).setForeground(Color.red);
-						}
-						
-					}
-
-					
-					friend_scro.setBounds(6, 166, 282, 345);
-					
-					main.setRelation(friendList);
-					main.getContentPane().add(friend_scro);
-					main.setFriend(friend_map);
-					main.setFriendPanel(friendPanel);
-					main.setFriendlist(friend_scro);
-					main.getChatBox().removeAll();
-					main.setTarget("%%");
-					main.getContentPane().revalidate();
-					main.getContentPane().repaint();
-					
-					
-
+				{					
+					createFriendUI(m);
 				}
 				else if(m.getMesType().equals(MessageType.groupMessage))
 				{
-					System.out.println("gp message");
-					main.getGroup_btn().setForeground(Color.black);
-					if(main.getNow_chat() == 1)
-					{
-						main.getGroup_btn().setForeground(Color.black);
-						if(main.getTarget().equals(m.getSender()))
-						{
-							main.showMessage(m);
-						}
-						else
-						{
-							String s1 = ManageChat.getGPCon(m.getSender());
-							String info = m.getStarter()+ " to Group : " + m.getCon() + "\r\n";
-							if(s1 == null) s1 = info;
-							else s1 = s1 + info;
-							ManageChat.addGPCon(m.getSender(), s1);
-							HashMap map = main.getFriend();
-							((Component) map.get(m.getSender())).setForeground(Color.RED);
-						}
-					}
-					else
-					{
-						main.getGroup_btn().setForeground(Color.red);
-						String s = ManageChat.getGPCon(m.getSender());
-						String info = m.getStarter()+ " to Group : " + m.getCon() + "\r\n";
-						if(s == null) s = info;
-						else s = s + info;
-						ManageChat.addGPCon(m.getSender(), s);
-						
-						
-					}
-				}
-				
-				else{
-						System.out.println("Sender: " + m.getSender()+"to");
-						System.out.println("Getter: " + m.getGetter());
-						System.out.println("Message:"+m.getCon()+"\n");
-						
-						//MainInterface main= ManageChat.getView("1");
-						
-						System.out.println(main.getTarget());
-					if(main.getNow_chat() == 0)
-					{
-						main.getFriend_btn().setForeground(Color.black);
-						if(main.getTarget().equals(m.getSender()))
-						{
-							
-							main.showMessage(m);
-						}
-						else{
-							String s1=ManageChat.getCon(m.getSender());
-							String info=m.getSender()+" to "+m.getGetter()+" :"+m.getCon()+"\r\n";
-							if(s1 == null)
-								s1 = info;
-							else
-								s1 = s1 + info;
-							ManageChat.addCon(m.getSender(), s1);
-							HashMap map = main.getFriend();
-							((Component) map.get(m.getSender())).setForeground(Color.RED);
-							((Component) map.get(m.getSender())).addMouseListener(new MouseAdapter() {
-								@Override
-								public void mouseClicked(MouseEvent e) 
-								{
-									if(e.getClickCount() == 2 && RelationManage.getOnlineFriend().contains(m.getSender())){
-										((Component) map.get(m.getSender())).setForeground(Color.GREEN);
-									}
-									
-	
-								}
-								
-							});
-							
-						}
-					}
-					else
-					{
-						main.getFriend_btn().setForeground(Color.red);
-						String s1 = ManageChat.getCon(m.getSender());
-						String info=m.getSender()+" to "+m.getGetter()+" :"+m.getCon()+"\r\n";
-						if(s1 == null) s1 = info;
-						else s1 = s1 + info;
-						ManageChat.addCon(m.getSender(), s1);
-					}
+					groupMessage(m);
+				}			
+				else
+				{
+					friendMessage(m);
 				}
 			}
 				

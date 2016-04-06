@@ -31,10 +31,27 @@ public class Relation {
 			e.printStackTrace();
 		}
 	}
-	
+	//true -> no relation
+	//false ->has relation
+	public boolean checkRelation(String s1, String s2) throws Throwable
+	{
+		stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM RELATION WHERE USERNAME = '"+ s1 + "' AND FRIEND = '"+s2+"';");
+		while(rs.next())
+		{
+			return false;
+		}
+		return true;
+		
+	}
 
-	
-
+	public void deleteRelation(String s1,String s2) throws Throwable
+	{
+		stmt = conn.createStatement();
+		stmt.execute("DELETE from RELATION where USERNAME ='"+s1+"' and FRIEND = '"+s2+"';");
+		stmt.execute("DELETE from RELATION where USERNAME ='"+s2+"' and FRIEND = '"+s1+"';");
+		
+	}
 
 	
 	public List<String>  getFriend(String s) throws Throwable

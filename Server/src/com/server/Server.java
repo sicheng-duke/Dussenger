@@ -57,6 +57,18 @@ public class Server {
 						thread.start();
 						thread.NotifyOther_Login(u.getUserId());
 						rel.closeConn();
+						
+						 Thread.sleep(100);
+						//send unread message when login in
+						ArrayList<Message> message_list = ManageRequest.getReq(u.getUserId());
+						if(message_list != null)
+						{
+							for(Message m: message_list)
+							{
+								sendRequest(m);
+							}
+							ManageRequest.removeReq(u.getUserId());
+						}
 					}
 					else
 					{
@@ -104,7 +116,16 @@ public class Server {
 	
 	}
 	
+	public static void sendRequest(Message m) throws Throwable
+	{
 	
+		ServerThread thread = ManageThread.getThread(m.getGetter());
+		if(thread != null)
+		{
+			ObjectOutputStream oos = new ObjectOutputStream(thread.getS().getOutputStream());
+			oos.writeObject(m);
+		}
+	}
 	
 	
 	public static void initialize()
