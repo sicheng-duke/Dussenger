@@ -184,8 +184,7 @@ public class ServerThread extends Thread {
 	public void updateGroup(Message m, String gpName) throws Throwable
 	{
 		GroupChat gpChat = new GroupChat();
-		if(gpChat.checkMember(m.getCon(), gpName))
-			gpChat.updateGroup(m.getCon(), gpName);
+		gpChat.updateGroup(m.getCon(), gpName);
 		gpChat.closeConn();
 				
 	}

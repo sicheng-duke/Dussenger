@@ -82,7 +82,7 @@ public class GroupChat {
 	 public boolean checkMember(String name, String gpName) throws Throwable
 	 {
 		 stmt = conn.createStatement();
-		 ResultSet rs = stmt.executeQuery("SELECT * FROM GPRECORD WHERE USRNAME = '"+ name + "' AND GPNAME = '"+gpName+"';");
+		 ResultSet rs = stmt.executeQuery("SELECT NAME FROM GPRECORD WHERE USRNAME = '"+ name + "' AND GPNAME = '"+gpName+"';");
 		 if(rs.next())
 		 {
 			 return false;
