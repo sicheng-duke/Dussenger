@@ -70,6 +70,15 @@ public class MainInterface extends JFrame implements ActionListener{
 	
 	private JButton message_btn;
 	
+	
+	private JButton file_btn;
+	
+	public JButton getFile_btn() {
+		return file_btn;
+	}
+	public void setFile_btn(JButton file_btn) {
+		this.file_btn = file_btn;
+	}
 	public JButton getMessage_btn() {
 		return message_btn;
 	}
@@ -196,6 +205,12 @@ public class MainInterface extends JFrame implements ActionListener{
 		lbl_Name.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_Name.setBounds(7, 6, 61, 38);
 		search.add(lbl_Name);
+		
+		file_btn = new JButton("File Transfer");
+		file_btn.setForeground(UIManager.getColor("Button.light"));
+		file_btn.setBounds(200,358,130,29);
+		file_btn.addActionListener(this);
+		
 		
 		btnSend = new JButton("send");
 		btnSend.setForeground(UIManager.getColor("Button.light"));
@@ -359,6 +374,7 @@ public class MainInterface extends JFrame implements ActionListener{
 		chatBox.add(currTalk);
 		
 		chatBox.add(btnSend);
+		chatBox.add(file_btn);
 		chatBox.revalidate();
 		chatBox.repaint();
 		if(ManageChat.getCon(friendID) != null &&this.now_chat == 0){
@@ -497,6 +513,10 @@ public class MainInterface extends JFrame implements ActionListener{
 		{
 			message_btn.setForeground(Color.black);
 			new MessageTable(this.usr);
+		}
+		if(e.getSource() == file_btn)
+		{
+			new FileFolder(this.usr);
 		}
 		
 	}

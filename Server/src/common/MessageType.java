@@ -37,6 +37,10 @@ public interface MessageType {
     
     String update_group = "26";
     
+    String send_file_req = "27";
     
+    String receive_file = "28";
+    
+    String deny_file = "29";
     
 }
