@@ -108,15 +108,27 @@ public class ServerThread extends Thread {
 		oos.writeObject(reply);
 	}
 	
-	public void addRequest(Message m) throws Throwable
+	public void forwardRequest(Message m,String type,String filePath) throws Throwable
 	{
+		//System.out.println("send file from" + m.getSender() + " to " + m.getSender());
 		Message reply = new Message();
 		reply.setSender(m.getSender());
-		reply.setGetter(m.getCon());
-		reply.setMesType(MessageType.add_request);
-		String s = "Friend " + m.getSender() + " wants to add you";
+		String s = null;
+		if(m.getMesType().equals(MessageType.add_friend))
+		{
+			reply.setGetter(m.getCon());
+			s = "Friend " + m.getSender() + " wants to add you";
+		}
+		else
+		{
+			reply.setGetter(m.getGetter());
+			s = "Friend " + m.getSender() + " wants to send file to you";
+		}
+		reply.setPath(filePath);
+		reply.setMesType(type);
+		
 		reply.setCon(s);
-		ServerThread thread = ManageThread.getThread(m.getCon());
+		ServerThread thread = ManageThread.getThread(reply.getGetter());
 		if(thread != null)
 		{
 			ObjectOutputStream oos = new ObjectOutputStream(thread.s.getOutputStream());
@@ -124,7 +136,7 @@ public class ServerThread extends Thread {
 		}
 		else
 		{
-			ManageRequest.storeReq(m.getCon(), reply);
+			ManageRequest.storeReq(reply.getGetter(), reply);
 		}
 		
 	}
@@ -188,6 +200,87 @@ public class ServerThread extends Thread {
 			gpChat.updateGroup(m.getCon(), gpName);
 		gpChat.closeConn();
 				
+	}
+	
+	public void fileSend(Message m) throws Throwable
+	{
+		ServerSocket s = new ServerSocket(4567);
+		Socket socket = null;
+		socket = s.accept();
+		File file = new File(m.getPath());	
+		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+		DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(m.getPath())));
+		int buffferSize = 10240;
+        byte[]bufArray=new byte[buffferSize];  
+        dos.writeUTF(file.getName());   
+        dos.flush();   
+        dos.writeLong((long) file.length());   
+        dos.flush();   
+        while (true) {   
+            int read = 0;   
+            if (dis!= null) {   
+              read = dis.read(bufArray);   
+            }   
+
+            if (read == -1) {   
+              break;   
+            }   
+            dos.write(bufArray, 0, read);   
+          }   
+          dos.flush(); 
+          if(dos != null) 
+				dos.close();
+          if(dis != null)
+        	  dis.close();
+          if(socket != null)
+        	  socket.close();
+          s.close();
+		
+	}
+	
+	public String  fileReceive(Message m) throws Throwable
+	{
+		System.out.println("file receive from" + m.getSender() + " to " + m.getGetter());
+		ServerSocket s = new ServerSocket(3456);
+		Socket socket = null;
+
+		socket = s.accept();
+		DataInputStream dis = null;
+		dis = new DataInputStream(new BufferedInputStream(socket   
+                .getInputStream()));  
+        int bufferSize = 10240;    
+        byte[] buf = new byte[bufferSize];   
+        int passedlen = 0;   
+        long len = 0;  
+        int  i = 0;
+        String savePath = "/tmp/"+m.getGetter()+"-";
+        savePath += dis.readUTF();   
+        DataOutputStream fileOut = new DataOutputStream(   
+            new BufferedOutputStream(new BufferedOutputStream(   
+                new FileOutputStream(savePath))));   
+        len = dis.readLong();  
+        while (true) 
+        {   
+            int read = 0;   
+            if (dis!= null) 
+            {   
+              read = dis.read(buf);   
+            }   
+            passedlen += read;   
+            if (read == -1) 
+            {   
+              break;   
+            }   
+            System.out.println("File Receive from" + m.getSender() + (passedlen * 100 / len) + "%");   
+            fileOut.write(buf, 0, read);   
+            i++;
+          } 
+        fileOut.close(); 
+        
+        s.close();
+        socket.close();
+        return savePath;
+		
 	}
 	
 	public void replyRequest(Message m, String type) throws Throwable
@@ -260,10 +353,20 @@ public class ServerThread extends Thread {
 					System.out.println("receive accept");
 					
 				}
-				else if(m.getMesType().equals(MessageType.delete_friend))
+				else if(m.getMesType().equals(MessageType.receive_file))
 				{
-					
+					fileSend(m);
+				}
+				else if(m.getMesType().equals(MessageType.delete_friend))
+				{					
 					deleteFriend(m);
+				}
+				//send file req
+				else if(m.getMesType().equals(MessageType.send_file_req))
+				{
+					String path = fileReceive(m);
+					forwardRequest(m,MessageType.send_file_req,path);
+					
 				}
 				else if(m.getMesType().equals(MessageType.denny_add_request))
 				{
@@ -343,7 +446,7 @@ public class ServerThread extends Thread {
 					else
 					{
 
-						addRequest(m);
+						forwardRequest(m,MessageType.add_request,null);
 					}
 				}
 				//change passwd
@@ -380,7 +483,7 @@ public class ServerThread extends Thread {
 	
 				}
 				//message forwarding
-				else
+				else if(m.getMesType().equals(MessageType.default_type))
 				{
 					//System.out.println("from "+m.getSender()+" to " + m.getSender() + ": "+ m.getCon());
 					

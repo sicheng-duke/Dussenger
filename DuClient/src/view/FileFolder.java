@@ -2,7 +2,20 @@ package view;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
 import javax.swing.*;
+
+import common.Message;
+import common.MessageType;
+import controller.IPManage;
+import controller.ManageThread;
  
 public class FileFolder implements ActionListener{
     
@@ -14,12 +27,14 @@ public class FileFolder implements ActionListener{
    
    private JButton cancel_btn;
    private JButton send_btn;
-   
+   private String path;
    private String usr;
-   public FileFolder(String usr){
+   private String target;
+   public FileFolder(String usr,String target){
 	   this.usr = usr;
+	   this.target = target;
 	   prepareGUI();
-        
+       this.path = null;
       this.fileFolder();
    }
 
@@ -53,7 +68,7 @@ public class FileFolder implements ActionListener{
 
    private void fileFolder(){
       headerLabel.setText("Choose the File you want"); 
-
+      
       final JFileChooser  fileDialog = new JFileChooser();
       JButton showFileDialogButton = new JButton("Open File");
       showFileDialogButton.addActionListener(new ActionListener() {
@@ -65,9 +80,11 @@ public class FileFolder implements ActionListener{
                
                statusLabel.setText("File Selected :" 
                + file.getPath());
+               path = file.getPath();
             }
             else{
-               statusLabel.setText("Open command cancelled by user." );           
+               statusLabel.setText("Open command cancelled by user." ); 
+               path = null;
             }      
          }
       });
@@ -78,7 +95,56 @@ public class FileFolder implements ActionListener{
       mainFrame.setVisible(true);  
    }
    
+   public void replyMessage(String filePath)
+   {
+	   Message m = new Message();
+	   m.setSender(this.usr);
+	   m.setMesType(MessageType.send_file_req);
+	   m.setGetter(this.target);
+		ObjectOutputStream oos;
+		try {
+			oos = new ObjectOutputStream
+			(ManageThread.getClientConServerThread(this.usr).getS().getOutputStream());
+			oos.writeObject(m);
+			
+			Thread.sleep(100);
+			Socket socket = new Socket(IPManage.getIP(),3456);
+			File file = new File(filePath);			
+			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+			DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)));  
+            int buffferSize=10240;  
+            byte[]bufArray=new byte[buffferSize];  
+            dos.writeUTF(file.getName());   
+            dos.flush();   
+            dos.writeLong((long) file.length());   
+            dos.flush();   
+            while (true) {   
+                int read = 0;   
+                if (dis!= null) {   
+                  read = dis.read(bufArray);   
+                }   
+  
+                if (read == -1) {   
+                  break;   
+                }   
+                dos.write(bufArray, 0, read);   
+              }   
+              dos.flush(); 
+              if(dos != null) 
+  				dos.close();
+              if(dis != null)
+            	  dis.close();
+              if(socket != null)
+            	  socket.close();
+              
+              
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+   }
    
+
    
    
    @Override
@@ -87,6 +153,18 @@ public class FileFolder implements ActionListener{
 		if(e.getSource() == cancel_btn)
 		{
 			mainFrame.dispose();
+		}
+		if(e.getSource() == send_btn)
+		{
+			if(path == null)
+			{
+				JOptionPane.showMessageDialog(mainFrame, "Choose a file to send");
+			}
+			else
+			{
+				replyMessage(path);
+				mainFrame.dispose();
+			}
 		}
 		
 	}

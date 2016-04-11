@@ -8,6 +8,8 @@ import java.util.*;
 import common.*;
 public class Server {
 	public static ArrayList<String> OnlineFriendList = new ArrayList<String> ();
+
+
 	public ArrayList<String> getOnlineFriendList() {
 		return OnlineFriendList;
 	}
@@ -17,8 +19,8 @@ public class Server {
 		//initialize();   //initialize database at first time 
 		//UserAuth auth = new UserAuth();
 		//auth.defaultInfo();
-		
-		
+
+
 		try {
 			String ss=InetAddress.getLocalHost().getHostAddress(); //get local machine's ip address
 			System.out.println(ss);
@@ -120,6 +122,7 @@ public class Server {
 	{
 	
 		ServerThread thread = ManageThread.getThread(m.getGetter());
+
 		if(thread != null)
 		{
 			ObjectOutputStream oos = new ObjectOutputStream(thread.getS().getOutputStream());

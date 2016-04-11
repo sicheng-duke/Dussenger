@@ -12,7 +12,14 @@ public class Message implements java.io.Serializable{
 	private String sender;
 	private String getter;
 	private String starter;
+	private String path;
 	
+	public String getPath() {
+		return path;
+	}
+	public void setPath(String path) {
+		this.path = path;
+	}
 	public String getStarter() {
 		return starter;
 	}

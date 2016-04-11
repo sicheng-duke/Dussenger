@@ -120,40 +120,38 @@ public class CreateGroup extends JFrame implements ActionListener {
 			}
 			else
 			{
-				nameStr = groupName.getText();
-				for(String s:chosenFriend)
-				{
-					System.out.println(s);
-				}
-				System.out.println(nameStr);
-
-				Message m = new Message();
-				m.setSender(owner);
-				m.setCon(nameStr);
-				m.setMesType(MessageType.createGroup);
-				chosenFriend.add(owner);
-				m.setFriendList(chosenFriend);
-				ObjectOutputStream oos;
-				try {
-					oos = new ObjectOutputStream
-					(ManageThread.getClientConServerThread(owner).getS().getOutputStream());
-					oos.writeObject(m);
-					dispose();
-
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				
-				
-				
-				
-				
+				sendGroupInfo();
 			}
 			
 		}
 		
+	}
+	public void sendGroupInfo()
+	{
+		nameStr = groupName.getText();
+		for(String s:chosenFriend)
+		{
+			System.out.println(s);
+		}
+		System.out.println(nameStr);
+
+		Message m = new Message();
+		m.setSender(owner);
+		m.setCon(nameStr);
+		m.setMesType(MessageType.createGroup);
+		chosenFriend.add(owner);
+		m.setFriendList(chosenFriend);
+		ObjectOutputStream oos;
+		try {
+			oos = new ObjectOutputStream
+			(ManageThread.getClientConServerThread(owner).getS().getOutputStream());
+			oos.writeObject(m);
+			dispose();
+
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
     public  void getAllJCheckBoxValue(Container ct){

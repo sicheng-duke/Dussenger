@@ -14,6 +14,14 @@ public class Message implements java.io.Serializable{
 	private String con;
 	private String sendTime;
 	private String starter;
+	private String path;
+	
+	public String getPath() {
+		return path;
+	}
+	public void setPath(String path) {
+		this.path = path;
+	}
 	private HashMap<String,String> groupMap;
 	public HashMap<String, String> getGroupMap() {
 		return groupMap;

@@ -5,10 +5,16 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ObjectOutputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 
 import common.Message;
 import common.MessageType;
+import controller.IPManage;
 import controller.ManageRequest;
 import controller.ManageThread;
 
@@ -98,6 +105,10 @@ public class MessageTable extends JFrame {
 			  {
 				  replyMessage(m,MessageType.denny_add_request);
 			  }
+			  else
+			  {
+				  replyMessage(m,MessageType.deny_file);
+			  }
 
 		  }
 		});
@@ -111,15 +122,43 @@ public class MessageTable extends JFrame {
 		  public void actionPerformed(ActionEvent e)
 		  {
 		    // display/center the jdialog when the button is pressed
-			  MessagePanel.remove(index-times);
-			  ManageRequest.removeRequest(index-times);
+			  
+			  
 			  setTitle("You have " + message_list.size() +" unread message ");
-			  times++;
-			  contentPane.revalidate();
-			  contentPane.repaint();
+
 			  if(m.getMesType().equals(MessageType.add_request))
 			  {
+				  MessagePanel.remove(index-times);
+				  ManageRequest.removeRequest(index-times);
+				  times++;
+				  contentPane.revalidate();
+				  contentPane.repaint();
 				  replyMessage(m,MessageType.accept_add_request);
+			  }
+			  else
+			  {
+				  String s = folderChooser();
+				  if(s != null)
+				  {
+					  MessagePanel.remove(index-times);
+					  ManageRequest.removeRequest(index-times);
+					  times++;
+					  contentPane.revalidate();
+					  contentPane.repaint();
+					  replyMessage(m,MessageType.receive_file);
+					  				  
+					  try {
+						Thread.sleep(100);
+						saveFile(s);	
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (Throwable e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				  }
+
 			  }
 			  
 			  
@@ -131,6 +170,57 @@ public class MessageTable extends JFrame {
 		
 		MessagePanel.add(medium_Panel);
 	}
+	public void saveFile(String path) throws Throwable
+	{
+		Socket socket = new Socket(IPManage.getIP(),4567);
+		DataInputStream dis = null;
+		dis = new DataInputStream(new BufferedInputStream(socket   
+                .getInputStream()));  
+        int bufferSize = 10240;    
+        byte[] buf = new byte[bufferSize];   
+        int passedlen = 0;   
+        long len = 0;  
+        int  i = 0;
+        String savePath = path + "/";
+        savePath += dis.readUTF().replaceFirst(this.usr+"-", "");   
+        DataOutputStream fileOut = new DataOutputStream(   
+            new BufferedOutputStream(new BufferedOutputStream(   
+                new FileOutputStream(savePath))));   
+        len = dis.readLong();  
+        while (true) 
+        {   
+            int read = 0;   
+            if (dis!= null) 
+            {   
+              read = dis.read(buf);   
+            }   
+            passedlen += read;   
+            if (read == -1) 
+            {   
+              break;   
+            }   
+            //System.out.println("File Receive from" + m.getSender() + (passedlen * 100 / len) + "%");   
+            fileOut.write(buf, 0, read);   
+            i++;
+          } 
+        fileOut.close(); 
+
+        socket.close();
+	}
+	
+	public String folderChooser()
+	{
+
+        
+		JFileChooser chooser = new JFileChooser(); 
+	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	    chooser.setAcceptAllFileFilterUsed(false);
+	    if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { 
+	        return chooser.getSelectedFile() + "";
+
+	    }
+	    return null;
+	}
 	
 	public void replyMessage(Message m,String MesType)
 	{
@@ -139,7 +229,7 @@ public class MessageTable extends JFrame {
 		  reply.setGetter(m.getSender());
 		  
 		  reply.setMesType(MesType);
-		  
+		  reply.setPath(m.getPath());
 		  ObjectOutputStream oos;
 		  try {
 			  oos = new ObjectOutputStream

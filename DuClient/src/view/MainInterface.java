@@ -478,7 +478,7 @@ public class MainInterface extends JFrame implements ActionListener{
 					m.setMesType(MessageType.groupForward);
 				}
 				m.setGetter(this.target);
-				
+				m.setMesType(MessageType.default_type);
 				m.setSender(this.usr);
 				
 				m.setCon(currTalk.getText());
@@ -516,7 +516,7 @@ public class MainInterface extends JFrame implements ActionListener{
 		}
 		if(e.getSource() == file_btn)
 		{
-			new FileFolder(this.usr);
+			new FileFolder(this.usr,this.target);
 		}
 		
 	}

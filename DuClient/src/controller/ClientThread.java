@@ -362,11 +362,15 @@ public class ClientThread extends Thread {
 		group_member = new JMenuItem("Member");
 		
 		try {
+			Thread.sleep(1000);
 			while(true)
 			{
 				ois = new ObjectInputStream(s.getInputStream());
 				Message m=(Message)ois.readObject();
+
+				
 				this.main = ManageChat.getView("1");
+
 				if (m.getMesType().equals(MessageType.onLine_Friend)) {
 					//update friend list
 					//System.out.println("new user is:" + m.getCon());
@@ -379,6 +383,14 @@ public class ClientThread extends Thread {
 						main.updateOnlineFriendList(m.getCon());
 					}
 				} 
+				else if(m.getMesType().equals(MessageType.add_request))
+				{
+					System.out.println("receive message");
+					main.getMessage_btn().setForeground(Color.red);
+					ManageRequest.addRequest(m);
+
+					
+				}
 				else if (m.getMesType().equals(MessageType.offLine_Friend)) 
 				{
 					//MainInterface main = ManageChat.getView("1");
@@ -401,18 +413,19 @@ public class ClientThread extends Thread {
 					main.updateFriendList();
 					
 				}
+
 				else if(m.getMesType().equals(MessageType.denny_add_request))
 				{
 					JOptionPane.showMessageDialog(main.getContentPane(), m.getSender()+" is not your friend");
 				}
-				else if(m.getMesType().equals(MessageType.add_request))
+				else if (m.getMesType().equals(MessageType.send_file_req))
 				{
 					System.out.println("receive message");
 					main.getMessage_btn().setForeground(Color.red);
 					ManageRequest.addRequest(m);
-					//need to be done!
 					
 				}
+
 				else if (m.getMesType().equals(MessageType.createFail))
 				{
 					JOptionPane.showMessageDialog(main.getContentPane(), "Group Name Exist");
@@ -433,7 +446,7 @@ public class ClientThread extends Thread {
 				{
 					groupMessage(m);
 				}			
-				else
+				else if(m.getMesType().equals((MessageType.default_type)))
 				{
 					friendMessage(m);
 				}
