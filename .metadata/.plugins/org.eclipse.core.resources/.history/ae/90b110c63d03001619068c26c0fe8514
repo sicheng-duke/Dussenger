@@ -11,12 +11,6 @@ import java.sql.DriverManager;
 public class init {
 
 	private Connection conn;
-	public init()
-	{
-		initDatabase();
-		groupInit();
-		
-	}
 	public void groupInit()
 	{
 		 String DATABASE = "Dussenger";

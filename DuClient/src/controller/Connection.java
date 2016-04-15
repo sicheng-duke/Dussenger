@@ -111,7 +111,7 @@ public class Connection {
 		
 		try {
 			s = new Socket();
-			s.connect(new InetSocketAddress(getServer_ip(),6543), 1000);
+			s.connect(new InetSocketAddress(getServer_ip(),6543), 100000);
 			ObjectOutputStream oos=new ObjectOutputStream(s.getOutputStream());
 			oos.writeObject(conn);
 

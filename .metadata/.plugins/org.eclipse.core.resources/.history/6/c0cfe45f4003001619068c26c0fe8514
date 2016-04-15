@@ -31,8 +31,8 @@ public class UserAuth {
 	}
 	public void defaultInfo()
 	{
-		String[] UserName = {"Mike","Bob","Alice","Alex","Ric","Steve","Lili","Drew"};
-		String[] Password = {"Mike","Bob","Alice","Alex","Ric","Steve","Lili","Drew"};
+		String[] UserName = {"Abb","Bcc","Cdd","Dee","Eff","Fgg","Ghh","Hii"};
+		String[] Password = {"123","234","345","456","567","678","789","890"};
 		String[] Age = {"15","45","67","23","42","15","45","67"};
 		try {
 			for(int i = 0 ; i < 8 ; i++)
