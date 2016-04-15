@@ -181,6 +181,8 @@ public class ServerThread extends Thread {
 		{
 			reply.setMesType(MessageType.createSuccess);
 			ArrayList<String> str = m.getFriendList();
+			for(String s :str)
+				System.out.println("frinend" + s);
 			cpChat.setGroup(str, m.getCon());
 		}
 		else

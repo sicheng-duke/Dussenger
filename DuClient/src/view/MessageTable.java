@@ -97,7 +97,7 @@ public class MessageTable extends JFrame {
 		    // display/center the jdialog when the button is pressed
 			  MessagePanel.remove(index-times);
 			  ManageRequest.removeRequest(index-times);
-			  setTitle("You have " + message_list.size() +" unread message ");
+			  setTitle("You have " + MessagePanel.getComponentCount() +" unread message ");
 			  times++;
 			  contentPane.revalidate();
 			  contentPane.repaint();
@@ -124,13 +124,14 @@ public class MessageTable extends JFrame {
 		    // display/center the jdialog when the button is pressed
 			  
 			  
-			  setTitle("You have " + message_list.size() +" unread message ");
-
+			  
 			  if(m.getMesType().equals(MessageType.add_request))
 			  {
 				  MessagePanel.remove(index-times);
 				  ManageRequest.removeRequest(index-times);
 				  times++;
+				  setTitle("You have " + MessagePanel.getComponentCount() +" unread message ");
+
 				  contentPane.revalidate();
 				  contentPane.repaint();
 				  replyMessage(m,MessageType.accept_add_request);
@@ -143,6 +144,7 @@ public class MessageTable extends JFrame {
 					  MessagePanel.remove(index-times);
 					  ManageRequest.removeRequest(index-times);
 					  times++;
+					  setTitle("You have " + MessagePanel.getComponentCount() +" unread message ");
 					  contentPane.revalidate();
 					  contentPane.repaint();
 					  replyMessage(m,MessageType.receive_file);

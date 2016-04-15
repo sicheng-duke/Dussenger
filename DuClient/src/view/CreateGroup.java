@@ -114,7 +114,7 @@ public class CreateGroup extends JFrame implements ActionListener {
 		{
 			
 			getAllJCheckBoxValue(this.friendPanel);
-			if(chosenFriend.size() == 0 || groupName.getText().trim().length() == 0)
+			if(chosenFriend.size() == 0 || groupName.getText() == null|| groupName.getText().trim().length() == 0 )
 			{
 				JOptionPane.showMessageDialog(contentPane, "Input group name and choose at least one friend");
 			}
@@ -155,9 +155,10 @@ public class CreateGroup extends JFrame implements ActionListener {
 	}
 
     public  void getAllJCheckBoxValue(Container ct){
-        if(chosenFriend==null){
-            chosenFriend=new ArrayList<String>();
-        }
+      
+        chosenFriend=new ArrayList<String>();
+        
+        
         int count=ct.getComponentCount();
         for(int i=0;i<count;i++){
             Component c=ct.getComponent(i);

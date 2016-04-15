@@ -112,7 +112,7 @@ public class AddToGroup extends JFrame implements ActionListener {
 			getAllJCheckBoxValue(this.friendPanel);
 			if(chosenGroup.size() == 0 )
 			{
-				JOptionPane.showMessageDialog(contentPane, "Input group name and choose at least one friend");
+				JOptionPane.showMessageDialog(contentPane, "Choose at least one group");
 			}
 			else
 			{

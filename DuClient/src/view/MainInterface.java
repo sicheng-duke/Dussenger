@@ -374,7 +374,8 @@ public class MainInterface extends JFrame implements ActionListener{
 		chatBox.add(currTalk);
 		
 		chatBox.add(btnSend);
-		chatBox.add(file_btn);
+		if(this.now_chat == 0)
+			chatBox.add(file_btn);
 		chatBox.revalidate();
 		chatBox.repaint();
 		if(ManageChat.getCon(friendID) != null &&this.now_chat == 0){
@@ -477,8 +478,12 @@ public class MainInterface extends JFrame implements ActionListener{
 				{
 					m.setMesType(MessageType.groupForward);
 				}
+				else
+				{
+					m.setMesType(MessageType.default_type);
+				}
 				m.setGetter(this.target);
-				m.setMesType(MessageType.default_type);
+				
 				m.setSender(this.usr);
 				
 				m.setCon(currTalk.getText());
