@@ -17,7 +17,7 @@ import java.util.*;
 public class ClientThread extends Thread {
 	
 	private Socket s;
-	
+	private JLabel img;
 	private JMenuItem add_to_group;
 	private JMenuItem delete_friend;
 	private JMenuItem group_member;
@@ -122,8 +122,8 @@ public class ClientThread extends Thread {
 			}
 			
 		}
-		group_scro.setBounds(6, 166, 282, 345);
-		
+		group_scro.setBounds(6, 166, 288, 345);
+
 		main.setRelation(groupList);
 		main.getContentPane().add(group_scro);
 		main.setFriend(group_map);
@@ -133,15 +133,19 @@ public class ClientThread extends Thread {
 		
 		
 		main.getChatBox().removeAll();
+		img=new JLabel(MainInterface.getImageIcon("image_material/duke_bluedevil.png",417,505));
+
+		img.setBounds(0, 0, 417, 505);
+		main.getChatBox().add(img);
 		
 		
-		JTextField tf_NoChat = new JTextField();
-		tf_NoChat.setEditable(false);
-		tf_NoChat.setBackground(SystemColor.window);
-		tf_NoChat.setHorizontalAlignment(SwingConstants.CENTER);
-		tf_NoChat.setText("No Current Chat");
-		tf_NoChat.setBounds(105, 214, 220, 65);
-		main.getChatBox().add(tf_NoChat);
+//		JTextField tf_NoChat = new JTextField();
+//		tf_NoChat.setEditable(false);
+//		tf_NoChat.setBackground(SystemColor.window);
+//		tf_NoChat.setHorizontalAlignment(SwingConstants.CENTER);
+//		tf_NoChat.setText("No Current Chat");
+//		tf_NoChat.setBounds(105, 214, 220, 65);
+//		main.getChatBox().add(tf_NoChat);
 		
 		main.setTarget("%%");
 		main.getContentPane().revalidate();
@@ -151,6 +155,8 @@ public class ClientThread extends Thread {
 	public void createFriendUI(Message m)
 	{
 		ArrayList<String> friendList = m.getFriendList();
+//		RelationManage.clearRelation();		
+//		RelationManage.setRelation(m.getFriendList());
 		main.getFriend_btn().setForeground(Color.black);
 		RelationManage.clearRelation();
 		RelationManage.setRelation(friendList);
@@ -245,7 +251,7 @@ public class ClientThread extends Thread {
 		}
 
 		
-		friend_scro.setBounds(6, 166, 282, 345);
+		friend_scro.setBounds(6, 166, 288, 345);
 		
 		main.setRelation(friendList);
 		main.getContentPane().add(friend_scro);
@@ -254,13 +260,17 @@ public class ClientThread extends Thread {
 		main.setFriendlist(friend_scro);
 		main.getChatBox().removeAll();
 		
-		JTextField tf_NoChat = new JTextField();
-		tf_NoChat.setEditable(false);
-		tf_NoChat.setBackground(SystemColor.window);
-		tf_NoChat.setHorizontalAlignment(SwingConstants.CENTER);
-		tf_NoChat.setText("No Current Chat");
-		tf_NoChat.setBounds(105, 214, 220, 65);
-		main.getChatBox().add(tf_NoChat);
+		img=new JLabel(MainInterface.getImageIcon("image_material/duke_bluedevil.png",417,505));
+		img.setBounds(0, 0, 417, 505);
+		main.getChatBox().add(img);
+		
+//		JTextField tf_NoChat = new JTextField();
+//		tf_NoChat.setEditable(false);
+//		tf_NoChat.setBackground(SystemColor.window);
+//		tf_NoChat.setHorizontalAlignment(SwingConstants.CENTER);
+//		tf_NoChat.setText("No Current Chat");
+//		tf_NoChat.setBounds(105, 214, 220, 65);
+//		main.getChatBox().add(tf_NoChat);
 		
 		main.setTarget("%%");
 		main.getContentPane().revalidate();

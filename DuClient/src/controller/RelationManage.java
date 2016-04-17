@@ -47,6 +47,8 @@ public class RelationManage {
 		return Relation;
 	}
 
+
+	
 	public static void setRelation(ArrayList<String> relation) {
 		Relation = relation;
 	}

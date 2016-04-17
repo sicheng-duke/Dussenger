@@ -17,8 +17,8 @@ public class Server {
 		// TODO Auto-generated method stub
 
 		//initialize();   //initialize database at first time 
-		UserAuth auth1 = new UserAuth();
-		auth1.defaultInfo();
+//		UserAuth auth1 = new UserAuth();
+//		auth1.defaultInfo();
 
 
 		try {

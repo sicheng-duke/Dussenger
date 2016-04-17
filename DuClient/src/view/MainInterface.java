@@ -20,6 +20,7 @@ import java.util.*;
 public class MainInterface extends JFrame implements ActionListener{
 	private JTextField tf_search;
 	private HashMap friend;
+	private JLabel img;
 	public HashMap getFriend() {
 		return friend;
 	}
@@ -152,6 +153,10 @@ public class MainInterface extends JFrame implements ActionListener{
 		search.setBounds(6, 6, 288, 155);
 		getContentPane().add(search);
 		search.setLayout(null);
+		
+		
+		
+		
 		
 		tf_search = new JTextField();
 		tf_search.setBounds(6, 104, 90, 38);
@@ -317,14 +322,19 @@ public class MainInterface extends JFrame implements ActionListener{
 		chatBox.setLayout(null);
 		
 		//before any talk, chat box is blank
-		tf_NoChat = new JTextField();
-		tf_NoChat.setEditable(false);
-		tf_NoChat.setBackground(SystemColor.window);
-		tf_NoChat.setHorizontalAlignment(SwingConstants.CENTER);
-		tf_NoChat.setText("No Current Chat");
-		tf_NoChat.setBounds(105, 214, 220, 65);
-		chatBox.add(tf_NoChat);
-		tf_NoChat.setColumns(10);
+		
+//		tf_NoChat = new JTextField();
+//		tf_NoChat.setEditable(false);
+//		tf_NoChat.setBackground(SystemColor.window);
+//		tf_NoChat.setHorizontalAlignment(SwingConstants.CENTER);
+//		tf_NoChat.setText("No Current Chat");
+//		tf_NoChat.setBounds(105, 214, 220, 65);
+		
+		img=new JLabel(getImageIcon("image_material/duke_bluedevil.png",417,505));
+		//img=new JLabel(new ImageIcon("image_material/duke_bluedevil.png"));
+		img.setBounds(0, 0, 417, 505);
+		chatBox.add(img);
+		//tf_NoChat.setColumns(10);
 		//ManageChat.addView("1", this);
 		//this.setDefaultCloseOperation(EXIT_ON_CLOSE); 
 		
@@ -400,7 +410,7 @@ public class MainInterface extends JFrame implements ActionListener{
 		}
 		return false;
 	}
-	
+
 	public void showMessage(Message m)
 	{
 		if(this.now_chat == 0)
@@ -416,7 +426,15 @@ public class MainInterface extends JFrame implements ActionListener{
 			ManageChat.removeGPCon(m.getSender());
 		}
 	}
-		
+	 public static ImageIcon getImageIcon(String path, int width, int height) {
+		  if (width == 0 || height == 0) {
+		   return new ImageIcon(path);
+		  }
+		  ImageIcon icon = new ImageIcon(path);
+		  icon.setImage(icon.getImage().getScaledInstance(width, height,
+		    Image.SCALE_DEFAULT));
+		  return icon;
+		 }
 	public void updateFriendList(){
 		
 		Message m = new Message();
