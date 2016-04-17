@@ -124,6 +124,7 @@ public class ClientRegister extends JFrame implements ActionListener{
 	    				Connection conn = new Connection();
 	    				if(conn.register(info))
 	    				{
+	    					JOptionPane.showMessageDialog(null, "register succeed!");
 	    					this.setVisible(false);
 	    	            	dispose();
 	    	            	new ClientLogin();
