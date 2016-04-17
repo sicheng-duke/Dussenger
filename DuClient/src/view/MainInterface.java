@@ -142,14 +142,14 @@ public class MainInterface extends JFrame implements ActionListener{
 		this.usr = usr;
 		setTitle("Dussenger");
 		setResizable(false);
-		getContentPane().setBackground(UIManager.getColor("CheckBoxMenuItem.selectionBackground"));
+		getContentPane().setBackground(UIManager.getColor("ToolBar.light"));
 		getContentPane().setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 723, 539);
 		getContentPane().setLayout(null);
 		//arrange search panel
 		search = new JPanel();
-		search.setBounds(6, 6, 282, 155);
+		search.setBounds(6, 6, 288, 155);
 		getContentPane().add(search);
 		search.setLayout(null);
 		
@@ -308,7 +308,7 @@ public class MainInterface extends JFrame implements ActionListener{
 		}
 		
 		
-		friendlist.setBounds(6, 166, 282, 345);
+		friendlist.setBounds(6, 166, 288, 345);
 		getContentPane().add(friendlist);
 		
 		chatBox = new JPanel();
