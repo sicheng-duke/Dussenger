@@ -1,33 +1,77 @@
-### TASK 1: Login Interface
-In login interface, there are one text box and one password box at the middle of the interface. Beneath them are two buttons, a register button and a login button.
+# Dussenger
 
-**function 1**: After clicking the login button, the login interface will vanish and the main interface will be opened (since currently the interface and server/database are not linked, there won't be password checking step).  
-**function 2**: After clicking the register button, the login interface will vanish and the register interface will be opened. 
+Desktop Messenger built on Java, which implements features such as group chatting and file transfer.
 
-### TASK 2: Register Interface
-In register interface, there are one text box for username setting, one password box for password setting, and one password box for password confirmation. Beneath them are two buttons, a confirm button and a cancel button.
+## Getting Started
 
-**function 1**: After clicking the cancel button, the the register interface will vanish and the login interface will be reopened with out checking the content of the three boxes.  
-**function 2**: After clicking the confirm button, it will check the content of the three boxes and act differently under 3 different conditions:  
-* **Condition1**: Either the text box for username setting or the password box for password setting is empty (or both of them), error message will pop out and the data from the password setting box will be erased.
-* **Condition2**:If the content in the password box for password setting and the content in the password box for password confirmation are not the same, error message will pop out and the data form both boxes will be erased.
-* **Condition3**:If it's not under condition1 or condition3, then the register interface will vanish and the login interface will be reopened.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### TASK 3: Main Interface 
-When user enters main interface, the interface is divided into three parts.
-On left upper half is a box for user information and friend search function.
-On left lower half is a box for friend list (currently user interface and server/database are not linked, so assume there are 50 friends for test).
-On right part is a chat box.
+### Prerequisities & Installing
+In order to run the sever on your computer, you need a computer that run Mac OS or Linux.
 
-**function 1**: in search text field, when friend requested is in friend list, the chat box for that friend will be opened, when friend is not in friend list, an other interface which provide adding new friend will be opened.  
-**function 2**: in friend list, when mouse is on a person, that name becomes blue. When mouse left that person, the name becomes dark.  
-**function 3**: in friend list, when the name of a friend is double clicked, the chat box of that friend is opened. In the chat box, there are one window for previous chat and one window for typing.  
+Also, you need to download postgresql from http://www.postgresql.org/download/.
 
-### TASK 4: Server  
-For the server,our program use Postgresql as Database to store user information and relationship between users.
+Then you need to create a Database named as **Dussenger** ,a login role named as **admin** and set login role's password to **ECE651**
 
-To run the server on other computer, you need to install [Postgeresql](http://www.postgresql.org/download/) on your computer , uncomment the `initialize` method in Server.java,set user, password, database the same as them in init.java and then you can use the program to set up the new Database on your computer.
+All those things above can be done in the Postgresql user interface.
 
-The Server code provide `initDatabase` method to create tables in the Database.  
-It also provide a test code to add some initial user and relationship to the Database for testing.  
-For future use, Server code provide `getFriend` ,`setUserInfo`, `setRelation` methods to get or set information in Database.
+
+### Initialization
+
+The first time you run the server you need to uncommon the **initialize()** line in the main function in Server.java file.
+
+**intialize()** function will set up the database, create the table you will use and set several default users in the Database.
+
+After you initialize your database, you need to common **initialize()** line again.
+
+The default user is **"Mike","Bob","Alice","Alex","Ric","Steve","Lili","Drew"** , they are all friends between each other and having the password equal to their user name.
+
+## Running the tests
+
+Explain how to run the automated tests for this system
+
+### Break down into end to end tests
+
+Explain what these tests test and why
+
+```
+Give an example
+```
+
+### And coding style tests
+
+Explain what these tests test and why
+
+```
+Give an example
+```
+
+## Deployment
+
+Add additional notes about how to deploy this on a live system
+
+## Built With
+
+* Dropwizard - Bla bla bla
+* Maven - Maybe
+* Atom - ergaerga
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+
+## Authors
+
+* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
