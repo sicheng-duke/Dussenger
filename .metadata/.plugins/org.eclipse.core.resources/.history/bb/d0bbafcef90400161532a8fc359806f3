@@ -32,11 +32,15 @@ public interface MessageType {
     
     String accept_add_request = "23";
     String denny_add_request = "24";
+    
     String delete_friend = "25";
+    
     String update_group = "26";
-    String send_file_req = "27";    
+    
+    String send_file_req = "27";
+    
     String receive_file = "28";
- 
+    
     String deny_file = "29";
     
 }
