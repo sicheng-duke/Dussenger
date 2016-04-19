@@ -5,6 +5,7 @@
 		<item value="false" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
 		<item value="false" key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED"/>
 		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value="/Users/liu/Desktop/Dussenger/DuClient"/>
 			<item value="/Users/liu/Desktop/Dussenger/Server"/>
 			<item value="/Users/liu/Desktop/Dussenger/Dussenger/DuClient"/>
 			<item value="/Users/JohnDong/Documents/Study/Graduate/Master in DUKE/ECE651/Dussenger_final/Dussenger"/>
