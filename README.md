@@ -14,7 +14,7 @@ Also, you need to download postgresql from http://www.postgresql.org/download/.
 Then you need to create a Database named as **Dussenger** ,a login role named as **admin** and set login role's password to **ECE651**
 
 All those things above can be done in the Postgresql user interface.
-
+![](img/DB_UI.png)
 
 ### 1.2 Initialization
 
@@ -76,4 +76,3 @@ Click the Password button, you can reset your password.
 
 * Add / Delete friend
 * Invite friend to existing group
-
