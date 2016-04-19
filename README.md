@@ -41,6 +41,7 @@ This part will introduce some features about this software.
 The client software enables user to see whether their friend is online of not.
 
 The following image shows that, when Bob is online, his friend Mike can see from the Friend list.
+
 ![IP](img/OnlineFriend.png)
 
 ### 2.2 Unread Message Notification
@@ -49,21 +50,25 @@ If Mike send Bob a meesage, but Bob doesn't read, the software will turn Mike's 
 When Bob receive an unread group message, the group name will turn red in the same way.
 
 If Bob's main is in the friend list part (as image shows), he receive a group message, the **Group List** button will also turn red. The **Friend List** button has the same feature.
+
 ![Mes](img/Unread_Message.png)
 
 ### 2.3 File Transfer
 The software also enable user to transfer file to others.
+
 ![Mes](img/TransferFile.png)
 
 ### 2.4 Message Table
 Enables user to deal with important message, such as file transfer and add friend request.
 Click the Message button, you can see your unread important messages.
 The server will retain these kinds of message if the target users are offline and send the message to target users when they are online.
+
 ![Mes](img/ReceiveFile.png)
 ![Mes](img/AddFriendMessage.png)
 
 ### 2.5 Reset Password
 Click the Password button, you can reset your password.
+
 ![Mes](img/ResetPasswd.png)
 
 ### 2.6 Group Related Function
