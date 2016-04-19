@@ -26,7 +26,7 @@ After you initialize your database, you need to common **initialize()** line aga
 
 The default user is **"Mike","Bob","Alice","Alex","Ric","Steve","Lili","Drew"** , they are all friends between each other and having the password equal to their user name.
 
-### 1.3 Useage
+### 1.3 Run
 
 Every time you run a client you need to type in the server's IP and connect to it. Then you can register and login.
 
@@ -76,14 +76,4 @@ Click the Password button, you can reset your password.
 
 * Add / Delete friend
 * Invite friend to existing group
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* Dropwizard - Bla bla bla
-* Maven - Maybe
-* Atom - ergaerga
 
