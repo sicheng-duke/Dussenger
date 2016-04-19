@@ -2,6 +2,8 @@ package view;
 
 import javax.swing.*;
 
+import com.sun.awt.AWTUtilities;
+
 import common.Message;
 import common.UserInfo;
 import controller.ManageChat;
@@ -9,6 +11,7 @@ import controller.ManageThread;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.RoundRectangle2D;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;  
 import controller.*;
@@ -23,39 +26,76 @@ public class ClientRegister extends JFrame implements ActionListener{
     JPasswordField passwd_txt,passwd_confirm;
     JButton register,cancel;
     
+    //
+
+    private JPanel imagePanel;
+    private Point origin;
+    private ImageIcon background;
+    JPanel panel,panelx,panely;
+    
+    //
+    
     char[] password1;
     char[] password2;
 	
 	public ClientRegister()
 	{
+		
 		errFrame=new JFrame();
-		//north
-		jbln=new JLabel(new ImageIcon("image_material/Register.jpg"));
+		this.setUndecorated(true);
+		
+		background = new ImageIcon("image_material/bluedevil.png");
+		// display the icon in a JLabel
+		JLabel label = new JLabel(background);
+		
+		label.setBounds(0, 0, background.getIconWidth(),background.getIconHeight());
+		imagePanel = (JPanel) this.getContentPane();
+		imagePanel.setOpaque(false);
+		
+		imagePanel.setLayout(new GridLayout(3,1));
+
+
+		this.getLayeredPane().setLayout(null);
+		// set the image as background
+		this.getLayeredPane().add(label, new Integer(Integer.MIN_VALUE));
+		  
+		this.setSize(background.getIconWidth(), background.getIconHeight());
+		this.setResizable(false);
+		this.setVisible(true);
+		
+		panel=new JPanel();
+		panelx=new JPanel();
+		panely=new JPanel();
+		panel.setOpaque(false);
+		panelx.setOpaque(false);
+		panely.setOpaque(false);
+		  
+		
 
 		//center
         jpm1=new JPanel();
         jpm1_jbl=new JLabel("   Set username     ");
-        jpm1_jbl.setFont(new Font("Serif",Font.PLAIN,30));
-        jpm1_jbl.setForeground(Color.blue);
-        usr_txt=new JTextField(15);
+        jpm1_jbl.setFont(new Font("Serif",Font.PLAIN,20));
+        jpm1_jbl.setForeground(Color.white);
+        usr_txt=new JTextField(10);
         usr_txt.setFont(new Font("Serif",Font.BOLD,20));
         jpm1.add(jpm1_jbl);
         jpm1.add(usr_txt);
 
         jpm2=new JPanel();
         jpm2_jbl=new JLabel("   Set password     ");
-        jpm2_jbl.setFont(new Font("Serif",Font.PLAIN,30));
-        jpm2_jbl.setForeground(Color.blue);
-        passwd_txt=new JPasswordField(15);
+        jpm2_jbl.setFont(new Font("Serif",Font.PLAIN,20));
+        jpm2_jbl.setForeground(Color.white);
+        passwd_txt=new JPasswordField(10);
         passwd_txt.setFont(new Font("Serif",Font.BOLD,20));
         jpm2.add(jpm2_jbl);
         jpm2.add(passwd_txt);
         
         jpm3=new JPanel();
-        jpm3_jbl=new JLabel("Confirm password ");
-        jpm3_jbl.setFont(new Font("Serif",Font.PLAIN,30));
-        jpm3_jbl.setForeground(Color.blue);
-        passwd_confirm=new JPasswordField(15);
+        jpm3_jbl=new JLabel("Confirm password");
+        jpm3_jbl.setFont(new Font("Serif",Font.PLAIN,20));
+        jpm3_jbl.setForeground(Color.white);
+        passwd_confirm=new JPasswordField(10);
         passwd_confirm.setFont(new Font("Serif",Font.BOLD,20));
         jpm3.add(jpm3_jbl);
         jpm3.add(passwd_confirm);
@@ -63,24 +103,38 @@ public class ClientRegister extends JFrame implements ActionListener{
 		//south
 		jps=new JPanel();
 		register=new JButton("Confirm");
+		register.setPreferredSize(new Dimension(140,40));
 		register.setFont(new Font("Serif", Font.PLAIN, 30));
 		register.addActionListener(this);
-		cancel=new JButton("  Cancel  ");
+		cancel=new JButton(" Cancel ");
+		cancel.setPreferredSize(new Dimension(140,40));
 		cancel.setFont(new Font("Serif", Font.PLAIN, 30));
 		cancel.addActionListener(this);
 		jps.add(register);
 		jps.add(cancel);
 		
+		jpm1.setOpaque(false);
+		jpm2.setOpaque(false);
+		jpm3.setOpaque(false);
+		jps.setOpaque(false);
 		//add the components to the interface
-		this.setLayout(new GridLayout(5,1));
-		this.add(jbln,"North");
-		this.add(jpm1);
-		this.add(jpm2);
-		this.add(jpm3);
-		this.add(jps,"South");
+		panel.setLayout(new GridLayout(4,1));
 		
+		panel.add(jpm1);
+		panel.add(jpm2);
+		panel.add(jpm3);
+		panel.add(jps,"south");
+		 
+		
+		
+		//add the components to the interface
+		panel.setLayout(new GridLayout(4,1));
+
+		imagePanel.add(panelx);
+		imagePanel.add(panely);
+		imagePanel.add(panel);
 		//set  the size, title, location and way to exit of the interface
-		this.setSize(510, 500);
+		//this.setSize(510, 500);
 		Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension framesize = this.getSize();
 		int x = (int)screensize.getWidth()/2 - (int)framesize.getWidth()/2;
@@ -88,7 +142,70 @@ public class ClientRegister extends JFrame implements ActionListener{
 		this.setLocation(x,y); 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
-        this.setTitle("Dussenger");
+        //this.setTitle("Dussenger");
+        
+        this.origin=new Point();
+        panelx.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                origin.x = e.getX();
+                origin.y = e.getY();
+            }
+
+            // right click to close the window
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3)
+                    System.exit(0);
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                repaint();
+            }
+        });
+
+        panelx.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                Point p = getLocation();
+                setLocation(p.x + e.getX() - origin.x, p.y + e.getY()
+                        - origin.y);
+            }
+        });
+        
+        panely.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                origin.x = e.getX();
+                origin.y = e.getY();
+            }
+
+            // right click to close the window
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3)
+                    System.exit(0);
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                repaint();
+            }
+        });
+
+        panely.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                Point p = getLocation();
+                setLocation(p.x + e.getX() - origin.x, p.y + e.getY()
+                        - origin.y);
+            }
+        });
+        
+
 	}
 
 
@@ -124,10 +241,25 @@ public class ClientRegister extends JFrame implements ActionListener{
 	    				Connection conn = new Connection();
 	    				if(conn.register(info))
 	    				{
-	    					JOptionPane.showMessageDialog(null, "register succeed!");
 	    					this.setVisible(false);
 	    	            	dispose();
-	    	            	new ClientLogin();
+	    	       	     try {
+	    	    	    	 for (javax.swing.UIManager.LookAndFeelInfo inf : javax.swing.UIManager.getInstalledLookAndFeels()) {
+	    	    	    		 if ("Nimbus".equals(inf.getName())) {
+	    	    	    			 javax.swing.UIManager.setLookAndFeel(inf.getClassName());
+	    	    	    			 break;
+	    	    	                
+	    	    	    		 }
+	    	    	    	 }
+	    	    	     }
+	    	             catch (Exception m) {
+	    	            	m.printStackTrace();
+	    	        	 }
+	    	    	       
+	    	    	     JFrame.setDefaultLookAndFeelDecorated(true);  
+	    	    	    
+	    	    	     ClientLogin clientLogin=new ClientLogin();
+	    	    	     AWTUtilities.setWindowShape(clientLogin,new RoundRectangle2D.Double(0.0D, 0.0D, clientLogin.getWidth(),clientLogin.getHeight(), 16.0D, 16.0D));
 	    				}
 	    				else
 	    				{
@@ -159,7 +291,23 @@ public class ClientRegister extends JFrame implements ActionListener{
 		if (e.getSource()==cancel)
 		{
 			dispose();
-			new ClientLogin();
+      	     try {
+   	    	 for (javax.swing.UIManager.LookAndFeelInfo inf : javax.swing.UIManager.getInstalledLookAndFeels()) {
+   	    		 if ("Nimbus".equals(inf.getName())) {
+   	    			 javax.swing.UIManager.setLookAndFeel(inf.getClassName());
+   	    			 break;
+   	                
+   	    		 }
+   	    	 }
+   	     }
+            catch (Exception m) {
+           	m.printStackTrace();
+       	 }
+   	       
+   	     JFrame.setDefaultLookAndFeelDecorated(true);  
+   	    
+   	     ClientLogin clientLogin=new ClientLogin();
+   	     AWTUtilities.setWindowShape(clientLogin,new RoundRectangle2D.Double(0.0D, 0.0D, clientLogin.getWidth(),clientLogin.getHeight(), 16.0D, 16.0D));
 			
 		}
 	}

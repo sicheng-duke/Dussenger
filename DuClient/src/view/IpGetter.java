@@ -2,11 +2,14 @@ package view;
 
 import javax.swing.*;
 
+import com.sun.awt.AWTUtilities;
+
 import controller.*;
 import controller.IPManage;
 import common.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.RoundRectangle2D;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,7 +62,6 @@ public class IpGetter extends JFrame implements ActionListener{
 
 	}
 
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -77,7 +79,23 @@ public class IpGetter extends JFrame implements ActionListener{
 				if(conn.first_connect(new UserInfo(2)))
 				{					
 					this.setVisible(false);
-					new ClientLogin();
+	   	            try {
+	   	    	   	 	for (javax.swing.UIManager.LookAndFeelInfo inf : javax.swing.UIManager.getInstalledLookAndFeels()) {
+	   	    	   	 		if ("Nimbus".equals(inf.getName())) {
+	   	    	   	 			javax.swing.UIManager.setLookAndFeel(inf.getClassName());
+	   	    	   	 			break;
+	   	    	   	 			
+	   	    	   	 		}
+	   	    	   	 	}
+	   	            }
+	   	            catch (Exception m) {
+	   	            	m.printStackTrace();
+	   	            }
+	   	    	      
+	   	            JFrame.setDefaultLookAndFeelDecorated(true);  
+	   	    	    
+	   	            ClientLogin clientLogin=new ClientLogin();
+	   	            AWTUtilities.setWindowShape(clientLogin,new RoundRectangle2D.Double(0.0D, 0.0D, clientLogin.getWidth(),clientLogin.getHeight(), 16.0D, 16.0D));
 				}
 				else
 				{
