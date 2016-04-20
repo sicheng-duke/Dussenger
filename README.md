@@ -31,6 +31,16 @@ The default user is **"Mike","Bob","Alice","Alex","Ric","Steve","Lili","Drew"** 
 Every time you run a client you need to type in the server's IP and connect to it. Then you can register and login.
 
 ![](img/IP.png)
+
+After you connect to the server, you can choose to login or register a new user.
+
+![](img/IP.png)
+
+![](img/Login.png)
+
+![](img/Register.png)
+
+
 ## 2 Features
 
 This part will introduce some features about this software.
