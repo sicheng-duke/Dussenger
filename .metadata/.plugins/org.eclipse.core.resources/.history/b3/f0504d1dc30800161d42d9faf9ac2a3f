@@ -255,7 +255,6 @@ public class ServerThread extends Thread {
         int passedlen = 0;   
         long len = 0;  
         int  i = 0;
-        //
         String savePath = "/tmp/"+m.getGetter()+"-";
         savePath += dis.readUTF();   
         DataOutputStream fileOut = new DataOutputStream(   
