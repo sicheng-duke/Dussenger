@@ -28,7 +28,12 @@ public class init {
 	            this.conn = DriverManager.getConnection(url);  //get a connection object
 	            
 	            Statement stmt = null;  
-	    		stmt = conn.createStatement(); //get a statement object
+	    		String drop_group = "DROP TABLE IF EXISTS GPCHAT;";
+	    		String drop_groupRec = "DROP TABLE IF EXISTS GPRECORD;";
+	            stmt = conn.createStatement(); //get a statement object
+	            stmt.executeUpdate(drop_group);
+	            stmt.executeUpdate(drop_groupRec);
+	            
 	            String group = "CREATE TABLE GPCHAT " +
                         "(NAME VARCHAR  NOT NULL," +
                         " OWNER   VARCHAR   NOT NULL,"+
@@ -60,8 +65,16 @@ public class init {
 	            String url = "jdbc:postgresql://localhost/" + DATABASE + "?user=" + USER + "&password=" + PASSWORD; 
 	            this.conn = DriverManager.getConnection(url);  //get a connection object
 	            
+	            String drop_userinfo ="DROP TABLE IF EXISTS USERINFO;";
+	            String drop_relation ="DROP TABLE IF EXISTS RELATION;";
+	            
 	            Statement stmt = null;  
 	    		stmt = conn.createStatement(); //get a statement object
+	    		
+	    		stmt.executeUpdate(drop_userinfo);
+	    		stmt.executeUpdate(drop_relation);
+	    		
+	    		
 	            String user_info = "CREATE TABLE USERINFO " +
 	                         "(USERNAME    VARCHAR PRIMARY KEY     NOT NULL," +
 	                         " PASSWORD    VARCHAR                 NOT NULL   , " +

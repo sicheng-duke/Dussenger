@@ -16,7 +16,7 @@ public class Server {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		initialize();   //uncommon it when initialize database at the first time 
+		//initialize();   //uncommon it when initialize database at the first time 
 
 
 
