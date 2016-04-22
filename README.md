@@ -23,13 +23,11 @@ All those things above can be done in the Postgresql user interface.
 
 ### 1.2 Initialization
 
-The first time you run the server you need to uncommon the **initialize()** line in the main function in Server.java file.
-
-**intialize()** function will set up the database, create the table you will use and set several default users in the Database.
-
-After you initialize your database, you need to common **initialize()** line again.
+Every time you run the server, it will remove all record in the Database, create four new table in the Database and set default data into the table.
 
 The default user is **"Mike","Bob","Alice","Alex","Ric","Steve","Lili","Drew"** , they are all friends between each other and having the password equal to their user name.
+
+If you want to save the user or relation you create, you need to comment the **initialize()** function in Server.java file after the frist use.
 
 ### 1.3 Run
 
